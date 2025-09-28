@@ -25,6 +25,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import { useNotifications } from '@/hooks/useNotifications';
 
 interface Message {
   id: string;
@@ -48,6 +49,10 @@ const SAMPLE_SUGGESTIONS = [
 ];
 
 export const AugiAICopilot: React.FC<AugiAICopilotProps> = ({ className = "" }) => {
+  const { createNotification } = useNotifications();
+  const [isClosed, setIsClosed] = useState(() => {
+    return localStorage.getItem('augi-copilot-closed') === 'true';
+  });
   const [isMinimized, setIsMinimized] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
@@ -129,6 +134,28 @@ export const AugiAICopilot: React.FC<AugiAICopilotProps> = ({ className = "" }) 
     handleSendMessage(suggestion);
   };
 
+  const handleClose = async () => {
+    setIsClosed(true);
+    localStorage.setItem('augi-copilot-closed', 'true');
+    
+    // Create notification when co-pilot is closed
+    await createNotification({
+      type: 'info',
+      title: 'AugiAI Co-pilot',
+      message: 'AugiAI is available to help with patient care insights. Click to reopen.'
+    });
+  };
+
+  const handleReopen = () => {
+    setIsClosed(false);
+    setIsMinimized(false);
+    localStorage.setItem('augi-copilot-closed', 'false');
+  };
+
+  if (isClosed) {
+    return null;
+  };
+
   if (isMinimized) {
     return (
       <div className={`fixed bottom-4 right-4 z-50 ${className}`}>
@@ -189,7 +216,7 @@ export const AugiAICopilot: React.FC<AugiAICopilotProps> = ({ className = "" }) 
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => setIsMinimized(true)}
+                onClick={handleClose}
                 className="h-7 w-7 p-0 hover:bg-white/20"
               >
                 <X className="h-4 w-4" />
@@ -206,7 +233,7 @@ export const AugiAICopilot: React.FC<AugiAICopilotProps> = ({ className = "" }) 
                   <div className={`max-w-[80%] rounded-lg p-3 ${
                     message.isUser
                       ? 'bg-primary text-primary-foreground'
-                      : 'bg-muted'
+                      : 'bg-card border border-border/50'
                   }`}>
                     <p className="text-sm">{message.text}</p>
                     <p className="text-xs opacity-70 mt-1">
@@ -233,7 +260,7 @@ export const AugiAICopilot: React.FC<AugiAICopilotProps> = ({ className = "" }) 
               
               {isTyping && (
                 <div className="flex justify-start">
-                  <div className="bg-muted rounded-lg p-3 max-w-[80%]">
+                  <div className="bg-card border border-border/50 rounded-lg p-3 max-w-[80%]">
                     <div className="flex items-center space-x-1">
                       <div className="w-2 h-2 bg-primary rounded-full animate-bounce"></div>
                       <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
