@@ -194,26 +194,26 @@ export const PatientList: React.FC = () => {
                 className="p-4 border border-border rounded-lg bg-gradient-card hover:shadow-soft transition-all cursor-pointer"
                 onClick={() => handlePatientClick(patient)}
               >
-                <div className="flex items-start justify-between">
-                  <div className="flex items-start space-x-3">
-                    <Avatar>
+                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+                  <div className="flex items-start space-x-3 min-w-0 flex-1">
+                    <Avatar className="flex-shrink-0">
                       <AvatarImage src="" />
-                      <AvatarFallback>
+                      <AvatarFallback className="text-xs">
                         {patient.first_name.charAt(0)}{patient.last_name.charAt(0)}
                       </AvatarFallback>
                     </Avatar>
-                    <div>
-                      <h3 className="font-medium text-foreground">
+                    <div className="min-w-0 flex-1">
+                      <h3 className="font-medium text-foreground text-sm sm:text-base">
                         {patient.first_name} {patient.last_name}
                         {isTestPatient(patient) && (
-                          <span className="text-xs text-orange-600 ml-2">(Test Patient)</span>
+                          <span className="text-xs text-orange-600 ml-2 block sm:inline">(Test Patient)</span>
                         )}
                       </h3>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-xs sm:text-sm text-muted-foreground">
                         Age {getAge(patient.date_of_birth)} • MRN: {patient.mrn || 'Not assigned'}
                       </p>
                       <div className="flex items-center space-x-2 mt-2">
-                        <Badge variant={getRiskBadgeVariant(patient.risk_level) as any}>
+                        <Badge variant={getRiskBadgeVariant(patient.risk_level) as any} className="text-xs">
                           {patient.risk_level === 'critical' && <AlertTriangle className="w-3 h-3 mr-1" />}
                           {patient.risk_level} risk
                         </Badge>
@@ -221,7 +221,7 @@ export const PatientList: React.FC = () => {
                     </div>
                   </div>
                   
-                  <div className="flex space-x-2">
+                  <div className="flex space-x-1 sm:space-x-2 flex-shrink-0">
                     <Button 
                       variant="outline" 
                       size="sm"
@@ -230,6 +230,7 @@ export const PatientList: React.FC = () => {
                         handleTelehealthCall(patient);
                       }}
                       title="Start Telehealth Call"
+                      className="p-2"
                     >
                       <Video className="w-4 h-4" />
                     </Button>
@@ -241,6 +242,7 @@ export const PatientList: React.FC = () => {
                         handleOpenChat(patient);
                       }}
                       title="Open Chat"
+                      className="p-2"
                     >
                       <MessageSquare className="w-4 h-4" />
                     </Button>
@@ -252,20 +254,21 @@ export const PatientList: React.FC = () => {
                         handleViewNotes(patient);
                       }}
                       title="View Medical Notes"
+                      className="p-2"
                     >
                       <FileText className="w-4 h-4" />
                     </Button>
                   </div>
                 </div>
                 
-                <div className="mt-3 pt-3 border-t border-border flex items-center justify-between text-sm text-muted-foreground">
+                <div className="mt-3 pt-3 border-t border-border flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs sm:text-sm text-muted-foreground">
                   <span className="flex items-center">
-                    <Clock className="w-3 h-3 mr-1" />
-                    Last visit: {formatDate(patient.last_visit_date)}
+                    <Clock className="w-3 h-3 mr-1 flex-shrink-0" />
+                    <span className="truncate">Last visit: {formatDate(patient.last_visit_date)}</span>
                   </span>
                   <span className="flex items-center">
-                    <Calendar className="w-3 h-3 mr-1" />
-                    Next: {formatDate(patient.next_appointment_date)}
+                    <Calendar className="w-3 h-3 mr-1 flex-shrink-0" />
+                    <span className="truncate">Next: {formatDate(patient.next_appointment_date)}</span>
                   </span>
                 </div>
               </div>

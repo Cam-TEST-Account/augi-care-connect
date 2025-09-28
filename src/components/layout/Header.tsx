@@ -24,6 +24,7 @@ import CommandPalette from '@/components/ui/command-palette';
 import { useNotifications } from '@/hooks/useNotifications';
 import { useCommandPalette } from '@/hooks/useCommandPalette';
 import { getUserDisplayInfo } from '@/utils/userUtils';
+import { SidebarTrigger } from '@/components/ui/sidebar';
 
 export const Header: React.FC = () => {
   const { user, signOut } = useAuth();
@@ -39,35 +40,49 @@ export const Header: React.FC = () => {
   const userInfo = getUserDisplayInfo(user);
 
   return (
-    <header className="floating-panel border-b-0 backdrop-blur-2xl sticky top-0 z-50 h-16 px-6 flex items-center justify-between animate-slide-up">
-      {/* Enhanced Search with Quick Actions */}
-      <div className="flex-1 max-w-md">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground z-10" />
-          <Input 
-            placeholder="Search patients, records, providers..." 
-            className="pl-10 pr-32 enhanced-search-input"
-            onClick={() => setOpen(true)}
-            readOnly
-          />
-          <Button 
-            variant="ghost" 
-            size="sm"
-            onClick={() => setOpen(true)}
-            className="absolute right-1 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors h-8 px-3"
-          >
-            <Command className="h-3 w-3 mr-1" />
-            <kbd className="pointer-events-none inline-flex h-4 select-none items-center gap-1 rounded border bg-muted px-1 font-mono text-[10px] font-medium text-muted-foreground">
-              ⌘K
-            </kbd>
-          </Button>
+    <header className="floating-panel border-b-0 backdrop-blur-2xl sticky top-0 z-50 h-14 sm:h-16 px-3 sm:px-4 md:px-6 flex items-center justify-between animate-slide-up">
+      {/* Mobile Sidebar Trigger and Search */}
+      <div className="flex items-center space-x-2 sm:space-x-4 flex-1">
+        {/* Mobile Sidebar Trigger */}
+        <SidebarTrigger className="md:hidden" />
+        
+        {/* Enhanced Search with Quick Actions */}
+        <div className="flex-1 max-w-xs sm:max-w-md">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground z-10" />
+            <Input 
+              placeholder="Search patients, records..." 
+              className="pl-10 pr-20 sm:pr-32 enhanced-search-input text-sm"
+              onClick={() => setOpen(true)}
+              readOnly
+            />
+            <Button 
+              variant="ghost" 
+              size="sm"
+              onClick={() => setOpen(true)}
+              className="absolute right-1 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors h-7 sm:h-8 px-2 sm:px-3"
+            >
+              <Command className="h-3 w-3 mr-1 hidden sm:block" />
+              <kbd className="pointer-events-none inline-flex h-4 select-none items-center gap-1 rounded border bg-muted px-1 font-mono text-[10px] font-medium text-muted-foreground">
+                <span className="hidden sm:inline">⌘</span>K
+              </kbd>
+            </Button>
+          </div>
         </div>
       </div>
+
       {/* Actions */}
-      <div className="flex items-center space-x-4">
-        <Button variant="glass" size="sm">
+      <div className="flex items-center space-x-2 sm:space-x-4">
+        {/* New Patient Button - Hidden on mobile */}
+        <Button variant="glass" size="sm" className="hidden sm:flex">
           <Plus className="w-4 h-4 mr-2" />
-          New Patient
+          <span className="hidden md:inline">New Patient</span>
+          <span className="md:hidden">New</span>
+        </Button>
+        
+        {/* Mobile New Patient Button */}
+        <Button variant="glass" size="sm" className="sm:hidden">
+          <Plus className="w-4 h-4" />
         </Button>
         
         <NotificationCenter
@@ -79,21 +94,21 @@ export const Header: React.FC = () => {
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="flex items-center space-x-2">
-              <Avatar className="w-8 h-8">
+            <Button variant="ghost" className="flex items-center space-x-2 p-1 sm:p-2">
+              <Avatar className="w-7 h-7 sm:w-8 sm:h-8">
                 <AvatarImage src="/placeholder-avatar.jpg" />
-                <AvatarFallback>{userInfo.initials}</AvatarFallback>
+                <AvatarFallback className="text-xs">{userInfo.initials}</AvatarFallback>
               </Avatar>
-              <div className="text-left">
-                <p className="text-sm font-medium">{userInfo.displayName}</p>
-                <p className="text-xs text-muted-foreground">{userInfo.specialty}</p>
+              <div className="text-left hidden lg:block">
+                <p className="text-sm font-medium truncate max-w-32">{userInfo.displayName}</p>
+                <p className="text-xs text-muted-foreground truncate max-w-32">{userInfo.specialty}</p>
               </div>
-              <ChevronDown className="w-4 h-4" />
+              <ChevronDown className="w-4 h-4 hidden sm:block" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="floating-panel border-0 mt-2" align="end">
+          <DropdownMenuContent className="floating-panel border-0 mt-2 w-56" align="end">
             <div className="px-2 py-1.5 text-sm text-muted-foreground">
-              {user?.email}
+              <div className="truncate">{user?.email}</div>
             </div>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => navigate('/settings')}>Profile</DropdownMenuItem>

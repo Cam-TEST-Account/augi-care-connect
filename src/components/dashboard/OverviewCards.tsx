@@ -182,21 +182,21 @@ export const OverviewCards: React.FC = () => {
 
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         {dashboardCards.map((stat, index) => (
           <Card key={index} className="bg-gradient-card shadow-soft border-0">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
+              <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground">
                 {stat.title}
               </CardTitle>
-              <stat.icon className="h-4 w-4 text-primary" />
+              <stat.icon className="h-4 w-4 text-primary flex-shrink-0" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-foreground">{stat.value}</div>
+              <div className="text-xl sm:text-2xl font-bold text-foreground">{stat.value}</div>
               <div className="flex items-center text-xs text-muted-foreground mt-1">
-                {stat.trend === 'up' && <TrendingUp className="w-3 h-3 mr-1 text-success" />}
-                {stat.trend === 'warning' && <AlertTriangle className="w-3 h-3 mr-1 text-warning" />}
-                {stat.change}
+                {stat.trend === 'up' && <TrendingUp className="w-3 h-3 mr-1 text-success flex-shrink-0" />}
+                {stat.trend === 'warning' && <AlertTriangle className="w-3 h-3 mr-1 text-warning flex-shrink-0" />}
+                <span className="truncate">{stat.change}</span>
               </div>
             </CardContent>
           </Card>
@@ -206,37 +206,57 @@ export const OverviewCards: React.FC = () => {
       {/* Test Data Management */}
       {stats.testPatientsCount > 0 && (
         <Card className="border-orange-200 bg-orange-50/50">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
+          <CardContent className="p-3 sm:p-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div className="flex items-center space-x-3">
-                <div className="p-2 bg-orange-100 rounded-full">
+                <div className="p-2 bg-orange-100 rounded-full flex-shrink-0">
                   <AlertTriangle className="h-4 w-4 text-orange-600" />
                 </div>
-                <div>
+                <div className="min-w-0 flex-1">
                   <h3 className="font-medium text-orange-900">Test Data Active</h3>
-                  <p className="text-sm text-orange-700">
+                  <p className="text-xs sm:text-sm text-orange-700">
                     You have {stats.testPatientsCount} test patients. Remove them when ready to use real data.
                   </p>
                 </div>
               </div>
-              <div className="flex space-x-2">
+              <div className="flex space-x-2 flex-shrink-0">
                 <Button 
                   variant="outline" 
                   size="sm"
                   onClick={fetchStats}
                   disabled={loading}
+                  className="hidden sm:flex"
                 >
                   <RefreshCw className="h-4 w-4 mr-2" />
                   Refresh
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={fetchStats}
+                  disabled={loading}
+                  className="sm:hidden"
+                >
+                  <RefreshCw className="h-4 w-4" />
                 </Button>
                 <Button 
                   variant="destructive" 
                   size="sm"
                   onClick={removeTestPatients}
                   disabled={removingTestData}
+                  className="hidden sm:flex"
                 >
                   <Trash2 className="h-4 w-4 mr-2" />
                   {removingTestData ? 'Removing...' : 'Remove Test Data'}
+                </Button>
+                <Button 
+                  variant="destructive" 
+                  size="sm"
+                  onClick={removeTestPatients}
+                  disabled={removingTestData}
+                  className="sm:hidden"
+                >
+                  <Trash2 className="h-4 w-4" />
                 </Button>
               </div>
             </div>

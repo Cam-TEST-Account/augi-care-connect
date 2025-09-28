@@ -18,9 +18,9 @@ const Index = () => {
   
   return (
     <DashboardLayout>
-      <div className="space-y-8 animate-fade-in">
+      <div className="space-y-4 sm:space-y-6 lg:space-y-8 animate-fade-in">
         {/* Welcome Header with Subtle Accent */}
-        <div className="relative p-8 rounded-2xl bg-white/95 backdrop-blur-xl border border-gray-200/50 overflow-hidden"
+        <div className="relative p-4 sm:p-6 lg:p-8 rounded-2xl bg-white/95 backdrop-blur-xl border border-gray-200/50 overflow-hidden"
              style={{ 
                boxShadow: `
                  0 4px 20px -4px hsla(var(--primary), 0.08),
@@ -30,9 +30,9 @@ const Index = () => {
              }}>
           <div className="absolute inset-0 bg-gradient-to-br from-gray-50/80 via-white/40 to-gray-100/60 pointer-events-none"></div>
           <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary via-primary-glow to-primary rounded-r-full"></div>
-          <div className="relative z-10 ml-4">
-            <h1 className="text-4xl font-bold text-foreground mb-2">Provider Dashboard</h1>
-            <p className="text-muted-foreground text-lg">{getGreetingMessage(user)}</p>
+          <div className="relative z-10 ml-2 sm:ml-4">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground mb-2">Provider Dashboard</h1>
+            <p className="text-muted-foreground text-sm sm:text-base lg:text-lg">{getGreetingMessage(user)}</p>
           </div>
         </div>
 
@@ -40,39 +40,39 @@ const Index = () => {
         <OverviewCards />
 
         {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-slide-up">
-          {/* Patient List - Takes 2 columns */}
-          <div className="lg:col-span-2">
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6 animate-slide-up">
+          {/* Patient List - Takes 2 columns on xl screens */}
+          <div className="xl:col-span-2">
             <PatientList />
           </div>
           
           {/* Recent Activity - Takes 1 column */}
-          <div className="lg:col-span-1">
+          <div className="xl:col-span-1">
             <RecentActivity />
           </div>
         </div>
 
         {/* Telehealth Section */}
         <div className="animate-slide-up">
-          <h2 className="text-2xl font-semibold text-foreground mb-6 flex items-center">
-            <div className="w-1 h-6 bg-gradient-to-b from-primary to-primary-glow rounded-full mr-3"></div>
+          <h2 className="text-xl sm:text-2xl font-semibold text-foreground mb-4 sm:mb-6 flex items-center">
+            <div className="w-1 h-5 sm:h-6 bg-gradient-to-b from-primary to-primary-glow rounded-full mr-3"></div>
             Telehealth Center
           </h2>
           <TelehealthPanel />
         </div>
 
         {/* Provider Team & Compliance */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-slide-up">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 animate-slide-up">
           <div>
-            <h2 className="text-2xl font-semibold text-foreground mb-6 flex items-center">
-              <div className="w-1 h-6 bg-gradient-to-b from-secondary to-secondary/80 rounded-full mr-3"></div>
+            <h2 className="text-xl sm:text-2xl font-semibold text-foreground mb-4 sm:mb-6 flex items-center">
+              <div className="w-1 h-5 sm:h-6 bg-gradient-to-b from-secondary to-secondary/80 rounded-full mr-3"></div>
               Care Team
             </h2>
             <ProviderTeam />
           </div>
           <div>
-            <h2 className="text-2xl font-semibold text-foreground mb-6 flex items-center">
-              <div className="w-1 h-6 bg-gradient-to-b from-medical-teal to-medical-blue rounded-full mr-3"></div>
+            <h2 className="text-xl sm:text-2xl font-semibold text-foreground mb-4 sm:mb-6 flex items-center">
+              <div className="w-1 h-5 sm:h-6 bg-gradient-to-b from-medical-teal to-medical-blue rounded-full mr-3"></div>
               Compliance Dashboard
             </h2>
             <CompliancePanel />
