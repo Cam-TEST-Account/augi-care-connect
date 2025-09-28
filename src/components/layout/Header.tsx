@@ -7,7 +7,8 @@ import {
   Bell, 
   Search, 
   Plus,
-  ChevronDown
+  ChevronDown,
+  Command
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -18,10 +19,16 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useAuth } from '@/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
+import NotificationCenter from '@/components/notifications/NotificationCenter';
+import CommandPalette from '@/components/ui/command-palette';
+import { useNotifications } from '@/hooks/useNotifications';
+import { useCommandPalette } from '@/hooks/useCommandPalette';
 
 export const Header: React.FC = () => {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
+  const { notifications, markAsRead, dismiss, markAllAsRead } = useNotifications();
+  const { open, setOpen } = useCommandPalette();
 
   const handleSignOut = async () => {
     await signOut();
@@ -53,17 +60,30 @@ export const Header: React.FC = () => {
 
       {/* Actions */}
       <div className="flex items-center space-x-4">
+        <Button 
+          variant="ghost" 
+          size="sm"
+          onClick={() => setOpen(true)}
+          className="text-muted-foreground"
+        >
+          <Command className="h-4 w-4 mr-2" />
+          <span className="hidden sm:inline">Quick Actions</span>
+          <kbd className="pointer-events-none hidden sm:inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground ml-2">
+            <span className="text-xs">⌘</span>K
+          </kbd>
+        </Button>
+        
         <Button variant="outline" size="sm">
           <Plus className="w-4 h-4 mr-2" />
           New Patient
         </Button>
         
-        <Button variant="ghost" size="sm" className="relative">
-          <Bell className="w-4 h-4" />
-          <Badge className="absolute -top-1 -right-1 w-5 h-5 text-xs p-0 flex items-center justify-center">
-            3
-          </Badge>
-        </Button>
+        <NotificationCenter
+          notifications={notifications}
+          onMarkAsRead={markAsRead}
+          onDismiss={dismiss}
+          onMarkAllAsRead={markAllAsRead}
+        />
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -91,6 +111,8 @@ export const Header: React.FC = () => {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
+      
+      <CommandPalette open={open} onOpenChange={setOpen} />
     </header>
   );
 };
