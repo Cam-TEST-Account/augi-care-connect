@@ -14,7 +14,697 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      appointments: {
+        Row: {
+          appointment_type: string
+          chief_complaint: string | null
+          created_at: string | null
+          duration_minutes: number | null
+          id: string
+          notes: string | null
+          patient_id: string
+          provider_id: string
+          scheduled_date: string
+          status: Database["public"]["Enums"]["appointment_status"] | null
+          telehealth_enabled: boolean | null
+          telehealth_link: string | null
+          updated_at: string | null
+          visit_summary: string | null
+        }
+        Insert: {
+          appointment_type: string
+          chief_complaint?: string | null
+          created_at?: string | null
+          duration_minutes?: number | null
+          id?: string
+          notes?: string | null
+          patient_id: string
+          provider_id: string
+          scheduled_date: string
+          status?: Database["public"]["Enums"]["appointment_status"] | null
+          telehealth_enabled?: boolean | null
+          telehealth_link?: string | null
+          updated_at?: string | null
+          visit_summary?: string | null
+        }
+        Update: {
+          appointment_type?: string
+          chief_complaint?: string | null
+          created_at?: string | null
+          duration_minutes?: number | null
+          id?: string
+          notes?: string | null
+          patient_id?: string
+          provider_id?: string
+          scheduled_date?: string
+          status?: Database["public"]["Enums"]["appointment_status"] | null
+          telehealth_enabled?: boolean | null
+          telehealth_link?: string | null
+          updated_at?: string | null
+          visit_summary?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "appointments_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "appointments_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "provider_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      audit_logs: {
+        Row: {
+          action: string
+          details: Json | null
+          id: string
+          ip_address: string | null
+          patient_id: string | null
+          provider_id: string | null
+          resource_id: string | null
+          resource_type: string
+          timestamp: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          details?: Json | null
+          id?: string
+          ip_address?: string | null
+          patient_id?: string | null
+          provider_id?: string | null
+          resource_id?: string | null
+          resource_type: string
+          timestamp?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          details?: Json | null
+          id?: string
+          ip_address?: string | null
+          patient_id?: string | null
+          provider_id?: string | null
+          resource_id?: string | null
+          resource_type?: string
+          timestamp?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "audit_logs_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "audit_logs_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "provider_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      clinical_notes: {
+        Row: {
+          appointment_id: string | null
+          content: string
+          created_at: string | null
+          id: string
+          is_signed: boolean | null
+          note_type: string
+          patient_id: string
+          provider_id: string
+          signed_date: string | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          appointment_id?: string | null
+          content: string
+          created_at?: string | null
+          id?: string
+          is_signed?: boolean | null
+          note_type: string
+          patient_id: string
+          provider_id: string
+          signed_date?: string | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          appointment_id?: string | null
+          content?: string
+          created_at?: string | null
+          id?: string
+          is_signed?: boolean | null
+          note_type?: string
+          patient_id?: string
+          provider_id?: string
+          signed_date?: string | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clinical_notes_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: false
+            referencedRelation: "appointments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clinical_notes_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clinical_notes_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "provider_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ehr_connections: {
+        Row: {
+          created_at: string | null
+          ehr_facility_name: string | null
+          ehr_system: Database["public"]["Enums"]["ehr_system"]
+          id: string
+          is_active: boolean | null
+          last_sync_date: string | null
+          patient_id: string
+          provider_external_id: string
+          provider_name: string
+          specialty: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          ehr_facility_name?: string | null
+          ehr_system: Database["public"]["Enums"]["ehr_system"]
+          id?: string
+          is_active?: boolean | null
+          last_sync_date?: string | null
+          patient_id: string
+          provider_external_id: string
+          provider_name: string
+          specialty?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          ehr_facility_name?: string | null
+          ehr_system?: Database["public"]["Enums"]["ehr_system"]
+          id?: string
+          is_active?: boolean | null
+          last_sync_date?: string | null
+          patient_id?: string
+          provider_external_id?: string
+          provider_name?: string
+          specialty?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ehr_connections_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lab_results: {
+        Row: {
+          abnormal_flag: boolean | null
+          collected_date: string | null
+          created_at: string | null
+          id: string
+          lab_facility: string | null
+          notes: string | null
+          ordered_by_provider_id: string | null
+          patient_id: string
+          reference_range: string | null
+          result_value: string | null
+          resulted_date: string | null
+          status: string | null
+          test_code: string | null
+          test_name: string
+          unit: string | null
+        }
+        Insert: {
+          abnormal_flag?: boolean | null
+          collected_date?: string | null
+          created_at?: string | null
+          id?: string
+          lab_facility?: string | null
+          notes?: string | null
+          ordered_by_provider_id?: string | null
+          patient_id: string
+          reference_range?: string | null
+          result_value?: string | null
+          resulted_date?: string | null
+          status?: string | null
+          test_code?: string | null
+          test_name: string
+          unit?: string | null
+        }
+        Update: {
+          abnormal_flag?: boolean | null
+          collected_date?: string | null
+          created_at?: string | null
+          id?: string
+          lab_facility?: string | null
+          notes?: string | null
+          ordered_by_provider_id?: string | null
+          patient_id?: string
+          reference_range?: string | null
+          result_value?: string | null
+          resulted_date?: string | null
+          status?: string | null
+          test_code?: string | null
+          test_name?: string
+          unit?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lab_results_ordered_by_provider_id_fkey"
+            columns: ["ordered_by_provider_id"]
+            isOneToOne: false
+            referencedRelation: "provider_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lab_results_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      patients: {
+        Row: {
+          address_line1: string | null
+          address_line2: string | null
+          city: string | null
+          created_at: string | null
+          date_of_birth: string
+          email: string | null
+          emergency_contact_name: string | null
+          emergency_contact_phone: string | null
+          external_patient_id: string | null
+          first_name: string
+          gender: string | null
+          id: string
+          insurance_policy_number: string | null
+          insurance_provider: string | null
+          last_name: string
+          last_visit_date: string | null
+          mrn: string | null
+          next_appointment_date: string | null
+          phone: string | null
+          primary_provider_id: string | null
+          risk_level: Database["public"]["Enums"]["risk_level"] | null
+          risk_score: number | null
+          state: string | null
+          status: Database["public"]["Enums"]["patient_status"] | null
+          updated_at: string | null
+          zip_code: string | null
+        }
+        Insert: {
+          address_line1?: string | null
+          address_line2?: string | null
+          city?: string | null
+          created_at?: string | null
+          date_of_birth: string
+          email?: string | null
+          emergency_contact_name?: string | null
+          emergency_contact_phone?: string | null
+          external_patient_id?: string | null
+          first_name: string
+          gender?: string | null
+          id?: string
+          insurance_policy_number?: string | null
+          insurance_provider?: string | null
+          last_name: string
+          last_visit_date?: string | null
+          mrn?: string | null
+          next_appointment_date?: string | null
+          phone?: string | null
+          primary_provider_id?: string | null
+          risk_level?: Database["public"]["Enums"]["risk_level"] | null
+          risk_score?: number | null
+          state?: string | null
+          status?: Database["public"]["Enums"]["patient_status"] | null
+          updated_at?: string | null
+          zip_code?: string | null
+        }
+        Update: {
+          address_line1?: string | null
+          address_line2?: string | null
+          city?: string | null
+          created_at?: string | null
+          date_of_birth?: string
+          email?: string | null
+          emergency_contact_name?: string | null
+          emergency_contact_phone?: string | null
+          external_patient_id?: string | null
+          first_name?: string
+          gender?: string | null
+          id?: string
+          insurance_policy_number?: string | null
+          insurance_provider?: string | null
+          last_name?: string
+          last_visit_date?: string | null
+          mrn?: string | null
+          next_appointment_date?: string | null
+          phone?: string | null
+          primary_provider_id?: string | null
+          risk_level?: Database["public"]["Enums"]["risk_level"] | null
+          risk_score?: number | null
+          state?: string | null
+          status?: Database["public"]["Enums"]["patient_status"] | null
+          updated_at?: string | null
+          zip_code?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "patients_primary_provider_id_fkey"
+            columns: ["primary_provider_id"]
+            isOneToOne: false
+            referencedRelation: "provider_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      prescriptions: {
+        Row: {
+          created_at: string | null
+          dea_schedule: string | null
+          dosage: string
+          end_date: string | null
+          external_prescription_id: string | null
+          frequency: string
+          id: string
+          instructions: string | null
+          is_controlled: boolean | null
+          medication_name: string
+          ndc_code: string | null
+          patient_id: string
+          pharmacy_name: string | null
+          pharmacy_phone: string | null
+          prescribed_date: string | null
+          provider_id: string
+          quantity: number | null
+          refills: number | null
+          start_date: string | null
+          status: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          dea_schedule?: string | null
+          dosage: string
+          end_date?: string | null
+          external_prescription_id?: string | null
+          frequency: string
+          id?: string
+          instructions?: string | null
+          is_controlled?: boolean | null
+          medication_name: string
+          ndc_code?: string | null
+          patient_id: string
+          pharmacy_name?: string | null
+          pharmacy_phone?: string | null
+          prescribed_date?: string | null
+          provider_id: string
+          quantity?: number | null
+          refills?: number | null
+          start_date?: string | null
+          status?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          dea_schedule?: string | null
+          dosage?: string
+          end_date?: string | null
+          external_prescription_id?: string | null
+          frequency?: string
+          id?: string
+          instructions?: string | null
+          is_controlled?: boolean | null
+          medication_name?: string
+          ndc_code?: string | null
+          patient_id?: string
+          pharmacy_name?: string | null
+          pharmacy_phone?: string | null
+          prescribed_date?: string | null
+          provider_id?: string
+          quantity?: number | null
+          refills?: number | null
+          start_date?: string | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prescriptions_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "prescriptions_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "provider_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      provider_profiles: {
+        Row: {
+          created_at: string | null
+          department: string | null
+          email: string
+          first_name: string
+          id: string
+          is_active: boolean | null
+          last_name: string
+          license_number: string | null
+          license_state: string | null
+          npi_number: string | null
+          organization_name: string | null
+          phone: string | null
+          role: Database["public"]["Enums"]["provider_role"]
+          specialty: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          department?: string | null
+          email: string
+          first_name: string
+          id?: string
+          is_active?: boolean | null
+          last_name: string
+          license_number?: string | null
+          license_state?: string | null
+          npi_number?: string | null
+          organization_name?: string | null
+          phone?: string | null
+          role?: Database["public"]["Enums"]["provider_role"]
+          specialty?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          department?: string | null
+          email?: string
+          first_name?: string
+          id?: string
+          is_active?: boolean | null
+          last_name?: string
+          license_number?: string | null
+          license_state?: string | null
+          npi_number?: string | null
+          organization_name?: string | null
+          phone?: string | null
+          role?: Database["public"]["Enums"]["provider_role"]
+          specialty?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      secure_messages: {
+        Row: {
+          created_at: string | null
+          ehr_source: Database["public"]["Enums"]["ehr_system"] | null
+          external_message_id: string | null
+          id: string
+          is_read: boolean | null
+          is_urgent: boolean | null
+          message_body: string
+          message_type: Database["public"]["Enums"]["message_type"] | null
+          parent_message_id: string | null
+          patient_id: string
+          read_date: string | null
+          recipient_provider_id: string | null
+          sender_provider_id: string
+          subject: string
+        }
+        Insert: {
+          created_at?: string | null
+          ehr_source?: Database["public"]["Enums"]["ehr_system"] | null
+          external_message_id?: string | null
+          id?: string
+          is_read?: boolean | null
+          is_urgent?: boolean | null
+          message_body: string
+          message_type?: Database["public"]["Enums"]["message_type"] | null
+          parent_message_id?: string | null
+          patient_id: string
+          read_date?: string | null
+          recipient_provider_id?: string | null
+          sender_provider_id: string
+          subject: string
+        }
+        Update: {
+          created_at?: string | null
+          ehr_source?: Database["public"]["Enums"]["ehr_system"] | null
+          external_message_id?: string | null
+          id?: string
+          is_read?: boolean | null
+          is_urgent?: boolean | null
+          message_body?: string
+          message_type?: Database["public"]["Enums"]["message_type"] | null
+          parent_message_id?: string | null
+          patient_id?: string
+          read_date?: string | null
+          recipient_provider_id?: string | null
+          sender_provider_id?: string
+          subject?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "secure_messages_parent_message_id_fkey"
+            columns: ["parent_message_id"]
+            isOneToOne: false
+            referencedRelation: "secure_messages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "secure_messages_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "secure_messages_recipient_provider_id_fkey"
+            columns: ["recipient_provider_id"]
+            isOneToOne: false
+            referencedRelation: "provider_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "secure_messages_sender_provider_id_fkey"
+            columns: ["sender_provider_id"]
+            isOneToOne: false
+            referencedRelation: "provider_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vital_signs: {
+        Row: {
+          blood_glucose: number | null
+          bmi: number | null
+          created_at: string | null
+          diastolic_bp: number | null
+          heart_rate: number | null
+          height_cm: number | null
+          id: string
+          notes: string | null
+          oxygen_saturation: number | null
+          patient_id: string
+          recorded_by_provider_id: string | null
+          recorded_date: string | null
+          respiratory_rate: number | null
+          systolic_bp: number | null
+          temperature_c: number | null
+          weight_kg: number | null
+        }
+        Insert: {
+          blood_glucose?: number | null
+          bmi?: number | null
+          created_at?: string | null
+          diastolic_bp?: number | null
+          heart_rate?: number | null
+          height_cm?: number | null
+          id?: string
+          notes?: string | null
+          oxygen_saturation?: number | null
+          patient_id: string
+          recorded_by_provider_id?: string | null
+          recorded_date?: string | null
+          respiratory_rate?: number | null
+          systolic_bp?: number | null
+          temperature_c?: number | null
+          weight_kg?: number | null
+        }
+        Update: {
+          blood_glucose?: number | null
+          bmi?: number | null
+          created_at?: string | null
+          diastolic_bp?: number | null
+          heart_rate?: number | null
+          height_cm?: number | null
+          id?: string
+          notes?: string | null
+          oxygen_saturation?: number | null
+          patient_id?: string
+          recorded_by_provider_id?: string | null
+          recorded_date?: string | null
+          respiratory_rate?: number | null
+          systolic_bp?: number | null
+          temperature_c?: number | null
+          weight_kg?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vital_signs_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vital_signs_recorded_by_provider_id_fkey"
+            columns: ["recorded_by_provider_id"]
+            isOneToOne: false
+            referencedRelation: "provider_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +713,24 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      appointment_status:
+        | "scheduled"
+        | "confirmed"
+        | "in_progress"
+        | "completed"
+        | "cancelled"
+        | "no_show"
+      ehr_system:
+        | "epic"
+        | "cerner"
+        | "athena"
+        | "allscripts"
+        | "nextgen"
+        | "other"
+      message_type: "clinical" | "administrative" | "system" | "alert"
+      patient_status: "active" | "inactive" | "deceased" | "transferred"
+      provider_role: "physician" | "nurse" | "pa" | "np" | "admin" | "tech"
+      risk_level: "low" | "medium" | "high" | "critical"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +857,27 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      appointment_status: [
+        "scheduled",
+        "confirmed",
+        "in_progress",
+        "completed",
+        "cancelled",
+        "no_show",
+      ],
+      ehr_system: [
+        "epic",
+        "cerner",
+        "athena",
+        "allscripts",
+        "nextgen",
+        "other",
+      ],
+      message_type: ["clinical", "administrative", "system", "alert"],
+      patient_status: ["active", "inactive", "deceased", "transferred"],
+      provider_role: ["physician", "nurse", "pa", "np", "admin", "tech"],
+      risk_level: ["low", "medium", "high", "critical"],
+    },
   },
 } as const
