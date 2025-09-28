@@ -14,9 +14,30 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
+import { useAuth } from '@/hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
 
 export const Header: React.FC = () => {
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/auth');
+  };
+
+  const userInitials = user?.user_metadata?.first_name && user?.user_metadata?.last_name 
+    ? `${user.user_metadata.first_name[0]}${user.user_metadata.last_name[0]}`
+    : user?.email?.[0].toUpperCase() || 'DR';
+
+  const userName = user?.user_metadata?.first_name && user?.user_metadata?.last_name
+    ? `Dr. ${user.user_metadata.first_name} ${user.user_metadata.last_name}`
+    : user?.email || 'Provider';
+
+  const userRole = user?.user_metadata?.specialty || 'Healthcare Provider';
+
   return (
     <header className="h-16 border-b border-border bg-card shadow-soft px-6 flex items-center justify-between">
       {/* Search */}
@@ -49,20 +70,24 @@ export const Header: React.FC = () => {
             <Button variant="ghost" className="flex items-center space-x-2">
               <Avatar className="w-8 h-8">
                 <AvatarImage src="/placeholder-avatar.jpg" />
-                <AvatarFallback>DR</AvatarFallback>
+                <AvatarFallback>{userInitials}</AvatarFallback>
               </Avatar>
               <div className="text-left">
-                <p className="text-sm font-medium">Dr. Sarah Chen</p>
-                <p className="text-xs text-muted-foreground">Cardiologist</p>
+                <p className="text-sm font-medium">{userName}</p>
+                <p className="text-xs text-muted-foreground">{userRole}</p>
               </div>
               <ChevronDown className="w-4 h-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem>Profile</DropdownMenuItem>
-            <DropdownMenuItem>Team Settings</DropdownMenuItem>
-            <DropdownMenuItem>Audit Log</DropdownMenuItem>
-            <DropdownMenuItem>Sign out</DropdownMenuItem>
+            <div className="px-2 py-1.5 text-sm text-muted-foreground">
+              {user?.email}
+            </div>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => navigate('/settings')}>Profile</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate('/security')}>Audit Log</DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={handleSignOut}>Sign out</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
