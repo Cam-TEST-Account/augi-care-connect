@@ -7,7 +7,6 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Shield, Lock } from 'lucide-react';
 import augiLogo from '@/assets/augi-logo.png';
 
-const SITE_PASSWORD = 'augipass';
 const PASSWORD_KEY = 'augi_site_access';
 
 interface PasswordProtectionProps {
@@ -19,6 +18,7 @@ export const PasswordProtection: React.FC<PasswordProtectionProps> = ({ children
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+  const [isVerifying, setIsVerifying] = useState(false);
 
   useEffect(() => {
     // Check if user has already entered the correct password
@@ -29,16 +29,35 @@ export const PasswordProtection: React.FC<PasswordProtectionProps> = ({ children
     setIsLoading(false);
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setIsVerifying(true);
 
-    if (password === SITE_PASSWORD) {
-      localStorage.setItem(PASSWORD_KEY, 'granted');
-      setIsAuthenticated(true);
-    } else {
-      setError('Incorrect password. Please try again.');
-      setPassword('');
+    try {
+      const { supabase } = await import('@/integrations/supabase/client');
+      const { data, error } = await supabase.functions.invoke('verify-site-password', {
+        body: { password }
+      });
+
+      if (error) {
+        console.error('Password verification error:', error);
+        setError('Unable to verify password. Please try again.');
+        return;
+      }
+
+      if (data?.valid) {
+        localStorage.setItem(PASSWORD_KEY, 'granted');
+        setIsAuthenticated(true);
+      } else {
+        setError('Incorrect password. Please try again.');
+        setPassword('');
+      }
+    } catch (error) {
+      console.error('Password verification failed:', error);
+      setError('Unable to verify password. Please try again.');
+    } finally {
+      setIsVerifying(false);
     }
   };
 
@@ -92,9 +111,9 @@ export const PasswordProtection: React.FC<PasswordProtectionProps> = ({ children
                 </Alert>
               )}
               
-              <Button type="submit" className="w-full">
+              <Button type="submit" className="w-full" disabled={isVerifying}>
                 <Shield className="w-4 h-4 mr-2" />
-                Access Platform
+                {isVerifying ? 'Verifying...' : 'Access Platform'}
               </Button>
             </form>
             

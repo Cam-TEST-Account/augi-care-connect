@@ -1,4 +1,4 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -13,38 +13,35 @@ serve(async (req) => {
 
   try {
     const { password } = await req.json();
-    
-    // Get the site password from environment
     const sitePassword = Deno.env.get('SITE_PASSWORD');
     
     if (!sitePassword) {
-      console.error('SITE_PASSWORD environment variable not configured');
+      console.error('SITE_PASSWORD environment variable not set');
       return new Response(
-        JSON.stringify({ valid: false, error: 'Server configuration error' }), 
+        JSON.stringify({ error: 'Site password not configured' }),
         { 
           status: 500, 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         }
       );
     }
 
-    // Simple constant-time comparison to prevent timing attacks
     const isValid = password === sitePassword;
     
     return new Response(
-      JSON.stringify({ valid: isValid }), 
+      JSON.stringify({ valid: isValid }),
       { 
         status: 200, 
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       }
     );
   } catch (error) {
-    console.error('Password verification error:', error);
+    console.error('Error verifying site password:', error);
     return new Response(
-      JSON.stringify({ valid: false, error: 'Invalid request' }), 
+      JSON.stringify({ error: 'Internal server error' }),
       { 
-        status: 400, 
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        status: 500, 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       }
     );
   }
