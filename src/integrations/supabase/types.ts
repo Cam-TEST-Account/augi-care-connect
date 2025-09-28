@@ -1135,6 +1135,14 @@ export type Database = {
         }
         Returns: boolean
       }
+      remove_test_patients: {
+        Args: { _organization_id: string }
+        Returns: undefined
+      }
+      seed_test_patients: {
+        Args: { _organization_id: string; _primary_provider_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
       account_type: "small_practice" | "enterprise_practice" | "hospital"
