@@ -16,7 +16,7 @@ import {
 const upcomingConsults = [
   {
     id: 1,
-    patient: 'Emily Rodriguez',
+    patient: 'Emily Rodriguez (Test Patient)',
     time: '2:00 PM',
     duration: '30 min',
     type: 'Follow-up',
@@ -24,7 +24,7 @@ const upcomingConsults = [
   },
   {
     id: 2,
-    patient: 'Michael Thompson', 
+    patient: 'Michael Thompson (Test Patient)', 
     time: '3:30 PM',
     duration: '45 min',
     type: 'Initial Consultation',

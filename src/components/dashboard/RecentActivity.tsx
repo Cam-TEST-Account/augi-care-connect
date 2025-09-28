@@ -16,7 +16,7 @@ const activities = [
     id: 1,
     type: 'appointment',
     title: 'Completed telehealth consultation',
-    patient: 'Emily Rodriguez',
+    patient: 'Emily Rodriguez (Test Patient)',
     time: '2 hours ago',
     icon: Video,
     status: 'completed'
@@ -25,7 +25,7 @@ const activities = [
     id: 2,
     type: 'message',
     title: 'New secure message received',
-    patient: 'Michael Thompson',
+    patient: 'Michael Thompson (Test Patient)',
     time: '4 hours ago',
     icon: MessageSquare,
     status: 'unread'
@@ -34,7 +34,7 @@ const activities = [
     id: 3,
     type: 'prescription',
     title: 'Prescription sent to pharmacy',
-    patient: 'Sarah Williams',
+    patient: 'Sarah Williams (Test Patient)',
     time: '6 hours ago',
     icon: Pill,
     status: 'sent'
@@ -43,7 +43,7 @@ const activities = [
     id: 4,
     type: 'record',
     title: 'Lab results uploaded',
-    patient: 'David Chen',
+    patient: 'David Chen (Test Patient)',
     time: '1 day ago',
     icon: FileText,
     status: 'review'
@@ -52,7 +52,7 @@ const activities = [
     id: 5,
     type: 'registration',
     title: 'New patient registered',
-    patient: 'Lisa Park',
+    patient: 'Lisa Park (Test Patient)',
     time: '2 days ago',
     icon: UserPlus,
     status: 'new'

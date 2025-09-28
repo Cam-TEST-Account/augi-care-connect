@@ -15,7 +15,7 @@ import {
 const patients = [
   {
     id: 1,
-    name: 'Emily Rodriguez',
+    name: 'Emily Rodriguez (Test Patient)',
     age: 34,
     condition: 'Hypertension',
     riskScore: 'High',
@@ -26,7 +26,7 @@ const patients = [
   },
   {
     id: 2,
-    name: 'Michael Thompson',
+    name: 'Michael Thompson (Test Patient)',
     age: 56,
     condition: 'Diabetes Type 2',
     riskScore: 'Medium',
@@ -37,7 +37,7 @@ const patients = [
   },
   {
     id: 3,
-    name: 'Sarah Williams',
+    name: 'Sarah Williams (Test Patient)',
     age: 42,
     condition: 'Heart Disease',
     riskScore: 'Critical',

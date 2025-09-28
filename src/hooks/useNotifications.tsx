@@ -13,7 +13,7 @@ export const useNotifications = () => {
       id: '1',
       type: 'critical',
       title: 'Critical Lab Value Alert',
-      message: 'Patient Sarah Johnson has critically high glucose levels (450 mg/dL). Immediate attention required.',
+      message: 'Patient Sarah Johnson (Test Patient) has critically high glucose levels (450 mg/dL). Immediate attention required.',
       timestamp: new Date(Date.now() - 5 * 60 * 1000), // 5 minutes ago
       read: false,
       actions: [
@@ -25,7 +25,7 @@ export const useNotifications = () => {
       id: '2',
       type: 'warning',
       title: 'Medication Interaction Warning',
-      message: 'Potential interaction detected between Warfarin and new Aspirin prescription for John Doe.',
+      message: 'Potential interaction detected between Warfarin and new Aspirin prescription for John Doe (Test Patient).',
       timestamp: new Date(Date.now() - 15 * 60 * 1000), // 15 minutes ago
       read: false,
       actions: [
@@ -36,7 +36,7 @@ export const useNotifications = () => {
       id: '3',
       type: 'info',
       title: 'Patient Risk Score Change',
-      message: 'Maria Garcia\'s risk score increased from Low to Medium based on new wearable data.',
+      message: 'Maria Garcia (Test Patient)\'s risk score increased from Low to Medium based on new wearable data.',
       timestamp: new Date(Date.now() - 30 * 60 * 1000), // 30 minutes ago
       read: false,
       actions: [
@@ -47,7 +47,7 @@ export const useNotifications = () => {
       id: '4',
       type: 'success',
       title: 'Appointment Confirmed',
-      message: 'Michael Chen confirmed his appointment for tomorrow at 2:00 PM.',
+      message: 'Michael Chen (Test Patient) confirmed his appointment for tomorrow at 2:00 PM.',
       timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
       read: true,
     },

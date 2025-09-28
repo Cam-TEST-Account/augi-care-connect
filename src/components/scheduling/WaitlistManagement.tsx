@@ -37,7 +37,7 @@ const WaitlistManagement: React.FC<WaitlistManagementProps> = ({ appointments = 
   const [waitlist, setWaitlist] = useState<WaitlistEntry[]>([
     {
       id: '1',
-      patientName: 'Maria Garcia',
+      patientName: 'Maria Garcia (Test Patient)',
       patientId: 'p1',
       appointmentType: 'Follow-up',
       preferredDate: '2024-01-15',
@@ -49,7 +49,7 @@ const WaitlistManagement: React.FC<WaitlistManagementProps> = ({ appointments = 
     },
     {
       id: '2',
-      patientName: 'Robert Kim',
+      patientName: 'Robert Kim (Test Patient)',
       patientId: 'p2',
       appointmentType: 'Annual Checkup',
       preferredDate: '2024-01-16',
@@ -61,7 +61,7 @@ const WaitlistManagement: React.FC<WaitlistManagementProps> = ({ appointments = 
     },
     {
       id: '3',
-      patientName: 'Lisa Thompson',
+      patientName: 'Lisa Thompson (Test Patient)',
       patientId: 'p3',
       appointmentType: 'Consultation',
       preferredDate: '2024-01-17',

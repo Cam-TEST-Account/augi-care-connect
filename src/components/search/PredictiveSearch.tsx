@@ -36,7 +36,7 @@ const PredictiveSearch: React.FC<PredictiveSearchProps> = ({
     {
       id: '1',
       type: 'patient',
-      title: 'Sarah Johnson',
+      title: 'Sarah Johnson (Test Patient)',
       subtitle: 'Female, 45 years • High Risk',
       metadata: 'Last visit: 2 days ago',
       recent: true,
@@ -44,7 +44,7 @@ const PredictiveSearch: React.FC<PredictiveSearchProps> = ({
     {
       id: '2',
       type: 'patient',
-      title: 'Michael Chen',
+      title: 'Michael Chen (Test Patient)',
       subtitle: 'Male, 32 years • Low Risk',
       metadata: 'Next appointment: Tomorrow',
     },
@@ -59,7 +59,7 @@ const PredictiveSearch: React.FC<PredictiveSearchProps> = ({
       id: '4',
       type: 'record',
       title: 'Lab Results - Complete Blood Count',
-      subtitle: 'Sarah Johnson • Today',
+      subtitle: 'Sarah Johnson (Test Patient) • Today',
       metadata: 'Critical values detected',
     },
     {
