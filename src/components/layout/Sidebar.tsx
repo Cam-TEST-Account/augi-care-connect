@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
+import { Link, useLocation } from 'react-router-dom';
 import { 
   Users, 
   Calendar, 
@@ -13,7 +14,8 @@ import {
 } from 'lucide-react';
 
 const navigation = [
-  { name: 'Patients', icon: Users, href: '/patients', current: true },
+  { name: 'Dashboard', icon: Activity, href: '/' },
+  { name: 'Patients', icon: Users, href: '/patients' },
   { name: 'Appointments', icon: Calendar, href: '/appointments' },
   { name: 'Telehealth', icon: Video, href: '/telehealth' },
   { name: 'Messages', icon: MessageSquare, href: '/messages' },
@@ -28,6 +30,8 @@ const bottomNavigation = [
 ];
 
 export const Sidebar: React.FC = () => {
+  const location = useLocation();
+  
   return (
     <div className="w-64 bg-card shadow-medium border-r border-border flex flex-col">
       {/* Logo */}
@@ -48,11 +52,14 @@ export const Sidebar: React.FC = () => {
         {navigation.map((item) => (
           <Button
             key={item.name}
-            variant={item.current ? "default" : "ghost"}
+            variant={location.pathname === item.href ? "default" : "ghost"}
             className="w-full justify-start"
+            asChild
           >
-            <item.icon className="w-4 h-4 mr-3" />
-            {item.name}
+            <Link to={item.href}>
+              <item.icon className="w-4 h-4 mr-3" />
+              {item.name}
+            </Link>
           </Button>
         ))}
       </nav>
@@ -62,11 +69,14 @@ export const Sidebar: React.FC = () => {
         {bottomNavigation.map((item) => (
           <Button
             key={item.name}
-            variant="ghost"
+            variant={location.pathname === item.href ? "default" : "ghost"}
             className="w-full justify-start"
+            asChild
           >
-            <item.icon className="w-4 h-4 mr-3" />
-            {item.name}
+            <Link to={item.href}>
+              <item.icon className="w-4 h-4 mr-3" />
+              {item.name}
+            </Link>
           </Button>
         ))}
       </div>
