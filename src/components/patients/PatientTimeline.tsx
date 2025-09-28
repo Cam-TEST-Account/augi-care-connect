@@ -13,6 +13,8 @@ import {
   TrendingDown,
   AlertTriangle 
 } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
+import { getUserDisplayInfo } from '@/utils/userUtils';
 
 interface TimelineEvent {
   id: string;
@@ -31,6 +33,9 @@ interface PatientTimelineProps {
 }
 
 const PatientTimeline: React.FC<PatientTimelineProps> = ({ patientId, events = [] }) => {
+  const { user } = useAuth();
+  const userInfo = getUserDisplayInfo(user);
+  
   // Mock timeline events
   const mockEvents: TimelineEvent[] = [
     {
@@ -56,7 +61,7 @@ const PatientTimeline: React.FC<PatientTimelineProps> = ({ patientId, events = [
       type: 'prescription',
       title: 'Medication Prescribed',
       description: 'Metformin 500mg - Take twice daily with meals',
-      provider: 'Dr. Smith',
+      provider: userInfo.displayName,
     },
     {
       id: '4',
@@ -64,7 +69,7 @@ const PatientTimeline: React.FC<PatientTimelineProps> = ({ patientId, events = [
       type: 'appointment',
       title: 'Follow-up Visit',
       description: 'Routine diabetes management check-up',
-      provider: 'Dr. Smith',
+      provider: userInfo.displayName,
     },
     {
       id: '5',

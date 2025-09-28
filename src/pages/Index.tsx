@@ -6,15 +6,19 @@ import { RecentActivity } from '@/components/dashboard/RecentActivity';
 import { TelehealthPanel } from '@/components/telehealth/TelehealthPanel';
 import { ProviderTeam } from '@/components/providers/ProviderTeam';
 import { CompliancePanel } from '@/components/compliance/CompliancePanel';
+import { useAuth } from '@/hooks/useAuth';
+import { getGreetingMessage } from '@/utils/userUtils';
 
 const Index = () => {
+  const { user } = useAuth();
+  
   return (
     <DashboardLayout>
       <div className="space-y-6">
         {/* Page Header */}
         <div>
           <h1 className="text-3xl font-bold text-foreground">Provider Dashboard</h1>
-          <p className="text-muted-foreground">Welcome back, Dr. Chen. Here's your patient overview.</p>
+          <p className="text-muted-foreground">{getGreetingMessage(user)}</p>
         </div>
 
         {/* Overview Cards */}

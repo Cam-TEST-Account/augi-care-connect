@@ -12,6 +12,8 @@ import {
   Eye,
   Download
 } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
+import { getUserDisplayInfo } from '@/utils/userUtils';
 
 const complianceMetrics = [
   {
@@ -48,37 +50,41 @@ const complianceMetrics = [
   }
 ];
 
-const recentAudits = [
-  {
-    id: 1,
-    type: 'Data Access',
-    user: 'Dr. Sarah Chen',
-    action: 'Viewed patient record',
-    patient: 'Emily Rodriguez',
-    timestamp: '2024-01-28 14:32:15',
-    status: 'authorized'
-  },
-  {
-    id: 2,
-    type: 'Telehealth',
-    user: 'Dr. Michael Rodriguez',
-    action: 'Started video consultation',
-    patient: 'Michael Thompson',
-    timestamp: '2024-01-28 13:45:22',
-    status: 'authorized'
-  },
-  {
-    id: 3,
-    type: 'Data Export',
-    user: 'System Admin',
-    action: 'Exported audit logs',
-    patient: 'N/A',
-    timestamp: '2024-01-28 12:00:00',
-    status: 'authorized'
-  }
-];
 
 export const CompliancePanel: React.FC = () => {
+  const { user } = useAuth();
+  const userInfo = getUserDisplayInfo(user);
+
+  const recentAudits = [
+    {
+      id: 1,
+      type: 'Data Access',
+      user: userInfo.displayName,
+      action: 'Viewed patient record',
+      patient: 'Emily Rodriguez',
+      timestamp: '2024-01-28 14:32:15',
+      status: 'authorized'
+    },
+    {
+      id: 2,
+      type: 'Telehealth',
+      user: userInfo.displayName,
+      action: 'Started video consultation',
+      patient: 'Michael Thompson',
+      timestamp: '2024-01-28 13:45:22',
+      status: 'authorized'
+    },
+    {
+      id: 3,
+      type: 'Data Export',
+      user: 'System Admin',
+      action: 'Exported audit logs',
+      patient: 'N/A',
+      timestamp: '2024-01-28 12:00:00',
+      status: 'authorized'
+    }
+  ];
+
   return (
     <div className="space-y-6">
       {/* Compliance Status Grid */}

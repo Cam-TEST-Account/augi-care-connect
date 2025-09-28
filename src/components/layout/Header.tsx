@@ -23,6 +23,7 @@ import NotificationCenter from '@/components/notifications/NotificationCenter';
 import CommandPalette from '@/components/ui/command-palette';
 import { useNotifications } from '@/hooks/useNotifications';
 import { useCommandPalette } from '@/hooks/useCommandPalette';
+import { getUserDisplayInfo } from '@/utils/userUtils';
 
 export const Header: React.FC = () => {
   const { user, signOut } = useAuth();
@@ -35,15 +36,7 @@ export const Header: React.FC = () => {
     navigate('/auth');
   };
 
-  const userInitials = user?.user_metadata?.first_name && user?.user_metadata?.last_name 
-    ? `${user.user_metadata.first_name[0]}${user.user_metadata.last_name[0]}`
-    : user?.email?.[0].toUpperCase() || 'DR';
-
-  const userName = user?.user_metadata?.first_name && user?.user_metadata?.last_name
-    ? `Dr. ${user.user_metadata.first_name} ${user.user_metadata.last_name}`
-    : user?.email || 'Provider';
-
-  const userRole = user?.user_metadata?.specialty || 'Healthcare Provider';
+  const userInfo = getUserDisplayInfo(user);
 
   return (
     <header className="h-16 border-b border-border bg-card shadow-soft px-6 flex items-center justify-between">
@@ -90,11 +83,11 @@ export const Header: React.FC = () => {
             <Button variant="ghost" className="flex items-center space-x-2">
               <Avatar className="w-8 h-8">
                 <AvatarImage src="/placeholder-avatar.jpg" />
-                <AvatarFallback>{userInitials}</AvatarFallback>
+                <AvatarFallback>{userInfo.initials}</AvatarFallback>
               </Avatar>
               <div className="text-left">
-                <p className="text-sm font-medium">{userName}</p>
-                <p className="text-xs text-muted-foreground">{userRole}</p>
+                <p className="text-sm font-medium">{userInfo.displayName}</p>
+                <p className="text-xs text-muted-foreground">{userInfo.specialty}</p>
               </div>
               <ChevronDown className="w-4 h-4" />
             </Button>
