@@ -210,6 +210,8 @@ serve(async (req) => {
             refresh_token: tokenData.refresh_token,
             token_expires_at: new Date(Date.now() + (tokenData.expires_in * 1000)).toISOString(),
             encounter_id: tokenData.encounter || null,
+            organization_id: providerProfile.organization_id,
+            created_by_provider_id: providerProfile.id,
             is_active: true,
             last_sync_date: new Date().toISOString()
           }, {

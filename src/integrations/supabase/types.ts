@@ -225,6 +225,7 @@ export type Database = {
         Row: {
           access_token: string | null
           created_at: string | null
+          created_by_provider_id: string | null
           ehr_facility_name: string | null
           ehr_system: Database["public"]["Enums"]["ehr_system"]
           encounter_id: string | null
@@ -242,6 +243,7 @@ export type Database = {
         Insert: {
           access_token?: string | null
           created_at?: string | null
+          created_by_provider_id?: string | null
           ehr_facility_name?: string | null
           ehr_system: Database["public"]["Enums"]["ehr_system"]
           encounter_id?: string | null
@@ -259,6 +261,7 @@ export type Database = {
         Update: {
           access_token?: string | null
           created_at?: string | null
+          created_by_provider_id?: string | null
           ehr_facility_name?: string | null
           ehr_system?: Database["public"]["Enums"]["ehr_system"]
           encounter_id?: string | null
@@ -286,6 +289,13 @@ export type Database = {
             columns: ["patient_id"]
             isOneToOne: false
             referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_ehr_connections_created_by_provider"
+            columns: ["created_by_provider_id"]
+            isOneToOne: false
+            referencedRelation: "provider_profiles"
             referencedColumns: ["id"]
           },
         ]
