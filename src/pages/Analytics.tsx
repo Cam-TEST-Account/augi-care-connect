@@ -292,12 +292,12 @@ const Analytics = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    {[
-                      { metric: 'HbA1c Control (Diabetes)', target: '<7%', achievement: '73%', trend: '+5%' },
-                      { metric: 'Blood Pressure Control', target: '<140/90', achievement: '81%', trend: '+8%' },
-                      { metric: 'LDL Cholesterol Goals', target: '<100 mg/dL', achievement: '67%', trend: '+3%' },
-                      { metric: 'BMI Improvement', target: '5% reduction', achievement: '45%', trend: '+12%' }
-                    ].map((outcome) => (
+                     {[
+                       { metric: 'HbA1c Control (Diabetes)', target: 'Under 7%', achievement: '73%', trend: '+5%' },
+                       { metric: 'Blood Pressure Control', target: 'Under 140/90', achievement: '81%', trend: '+8%' },
+                       { metric: 'LDL Cholesterol Goals', target: 'Under 100 mg/dL', achievement: '67%', trend: '+3%' },
+                       { metric: 'BMI Improvement', target: '5% reduction', achievement: '45%', trend: '+12%' }
+                     ].map((outcome) => (
                       <div key={outcome.metric} className="p-3 border border-border rounded-lg">
                         <div className="flex items-center justify-between mb-2">
                           <h4 className="font-medium text-foreground">{outcome.metric}</h4>
