@@ -153,8 +153,18 @@ export const AugiAICopilot: React.FC<AugiAICopilotProps> = ({ className = "" }) 
   };
 
   if (isClosed) {
-    return null;
-  };
+    return (
+      <div className={`fixed bottom-4 right-4 z-50 ${className}`}>
+        <Button
+          onClick={handleReopen}
+          className="h-12 w-12 rounded-full bg-primary hover:bg-primary/90 shadow-lg"
+          size="sm"
+        >
+          <Bot className="h-6 w-6" />
+        </Button>
+      </div>
+    );
+  }
 
   if (isMinimized) {
     return (
