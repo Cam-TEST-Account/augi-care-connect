@@ -203,40 +203,52 @@ export type Database = {
       }
       ehr_connections: {
         Row: {
+          access_token: string | null
           created_at: string | null
           ehr_facility_name: string | null
           ehr_system: Database["public"]["Enums"]["ehr_system"]
+          encounter_id: string | null
           id: string
           is_active: boolean | null
           last_sync_date: string | null
           patient_id: string
           provider_external_id: string
           provider_name: string
+          refresh_token: string | null
           specialty: string | null
+          token_expires_at: string | null
         }
         Insert: {
+          access_token?: string | null
           created_at?: string | null
           ehr_facility_name?: string | null
           ehr_system: Database["public"]["Enums"]["ehr_system"]
+          encounter_id?: string | null
           id?: string
           is_active?: boolean | null
           last_sync_date?: string | null
           patient_id: string
           provider_external_id: string
           provider_name: string
+          refresh_token?: string | null
           specialty?: string | null
+          token_expires_at?: string | null
         }
         Update: {
+          access_token?: string | null
           created_at?: string | null
           ehr_facility_name?: string | null
           ehr_system?: Database["public"]["Enums"]["ehr_system"]
+          encounter_id?: string | null
           id?: string
           is_active?: boolean | null
           last_sync_date?: string | null
           patient_id?: string
           provider_external_id?: string
           provider_name?: string
+          refresh_token?: string | null
           specialty?: string | null
+          token_expires_at?: string | null
         }
         Relationships: [
           {
@@ -247,6 +259,33 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      ehr_oauth_sessions: {
+        Row: {
+          created_at: string
+          ehr_system: string
+          expires_at: string
+          id: string
+          patient_id: string
+          state: string
+        }
+        Insert: {
+          created_at?: string
+          ehr_system: string
+          expires_at: string
+          id?: string
+          patient_id: string
+          state: string
+        }
+        Update: {
+          created_at?: string
+          ehr_system?: string
+          expires_at?: string
+          id?: string
+          patient_id?: string
+          state?: string
+        }
+        Relationships: []
       }
       lab_results: {
         Row: {
@@ -710,7 +749,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      cleanup_expired_oauth_sessions: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
     }
     Enums: {
       appointment_status:

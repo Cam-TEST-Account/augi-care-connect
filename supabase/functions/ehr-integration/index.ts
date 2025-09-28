@@ -104,11 +104,19 @@ serve(async (req) => {
         const oauthState = `${providerProfile.id}_${Date.now()}_${Math.random().toString(36).substring(7)}`;
         const callbackUrl = `${Deno.env.get('SUPABASE_URL')}/functions/v1/ehr-integration/callback`;
 
-        // Store state in database for verification
+        // Store state in database for verification (using patient_id from URL params or session)
+        const patientId = new URL(req.url).searchParams.get('patient_id');
+        if (!patientId) {
+          return new Response(
+            JSON.stringify({ error: 'Patient ID required for EHR integration' }),
+            { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          );
+        }
+
         await supabase
           .from('ehr_oauth_sessions')
           .insert({
-            provider_id: providerProfile.id,
+            patient_id: patientId,
             ehr_system,
             state: oauthState,
             expires_at: new Date(Date.now() + 10 * 60 * 1000).toISOString() // 10 minutes
@@ -143,7 +151,6 @@ serve(async (req) => {
           .from('ehr_oauth_sessions')
           .select('*')
           .eq('state', state)
-          .eq('provider_id', providerProfile.id)
           .single();
 
         if (sessionError || !oauthSession) {
@@ -193,17 +200,20 @@ serve(async (req) => {
         const { data: connection, error: connectionError } = await supabase
           .from('ehr_connections')
           .upsert({
-            provider_id: providerProfile.id,
+            patient_id: oauthSession.patient_id,
             ehr_system: oauthSession.ehr_system,
+            provider_external_id: tokenData.provider_id || `provider_${Date.now()}`,
+            provider_name: tokenData.provider_name || 'Unknown Provider',
+            ehr_facility_name: tokenData.facility_name || null,
+            specialty: tokenData.specialty || null,
             access_token: tokenData.access_token,
             refresh_token: tokenData.refresh_token,
             token_expires_at: new Date(Date.now() + (tokenData.expires_in * 1000)).toISOString(),
-            patient_id: tokenData.patient || null,
             encounter_id: tokenData.encounter || null,
             is_active: true,
             last_sync_date: new Date().toISOString()
           }, {
-            onConflict: 'provider_id, ehr_system'
+            onConflict: 'patient_id, ehr_system'
           })
           .select()
           .single();
