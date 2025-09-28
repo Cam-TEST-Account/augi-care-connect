@@ -1,57 +1,27 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { NewMessageDialog } from '@/components/messages/NewMessageDialog';
+import { MessageList } from '@/components/messages/MessageList';
+import { MessageDetail } from '@/components/messages/MessageDetail';
 import { 
   MessageSquare, 
-  Search, 
   Plus,
-  Clock,
-  Send,
   Paperclip,
   Star,
-  Archive,
   Shield
 } from 'lucide-react';
 
-const conversations = [
-  {
-    id: 1,
-    patient: 'Emily Rodriguez',
-    lastMessage: 'Thank you for adjusting my medication. The new dosage is working much better.',
-    timestamp: '2 hours ago',
-    unread: 2,
-    priority: 'normal',
-    avatar: '/placeholder-patient1.jpg',
-    ehrSystem: 'Epic MyChart'
-  },
-  {
-    id: 2,
-    patient: 'Michael Thompson',
-    lastMessage: 'I have some concerns about the upcoming procedure. Can we schedule a call?',
-    timestamp: '4 hours ago',
-    unread: 1,
-    priority: 'high',
-    avatar: '/placeholder-patient2.jpg',
-    ehrSystem: 'Cerner'
-  },
-  {
-    id: 3,
-    patient: 'Sarah Williams',
-    lastMessage: 'Lab results look good. When should I schedule my next appointment?',
-    timestamp: 'Yesterday',
-    unread: 0,
-    priority: 'normal',
-    avatar: '/placeholder-patient3.jpg',
-    ehrSystem: 'Athena'
-  }
-];
-
 const Messages = () => {
+  const [showNewMessage, setShowNewMessage] = useState(false);
+  const [selectedMessage, setSelectedMessage] = useState<any>(null);
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  const handleRefresh = () => {
+    setRefreshKey(prev => prev + 1);
+  };
   return (
     <DashboardLayout>
       <div className="space-y-6">
@@ -60,7 +30,7 @@ const Messages = () => {
             <h1 className="text-3xl font-bold text-foreground">Secure Messages</h1>
             <p className="text-muted-foreground">HIPAA-compliant patient communication across all EHR systems</p>
           </div>
-          <Button>
+          <Button onClick={() => setShowNewMessage(true)}>
             <Plus className="w-4 h-4 mr-2" />
             New Message
           </Button>
@@ -69,136 +39,27 @@ const Messages = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Message List */}
           <div className="lg:col-span-1">
-            <Card>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle>Conversations</CardTitle>
-                  <Badge variant="outline">8 unread</Badge>
-                </div>
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-                  <Input 
-                    placeholder="Search messages..." 
-                    className="pl-10"
-                  />
-                </div>
-              </CardHeader>
-              <CardContent className="p-0">
-                <div className="space-y-0">
-                  {conversations.map((conversation) => (
-                    <div 
-                      key={conversation.id}
-                      className="p-4 border-b border-border hover:bg-muted/50 cursor-pointer transition-colors"
-                    >
-                      <div className="flex items-start space-x-3">
-                        <Avatar>
-                          <AvatarImage src={conversation.avatar} />
-                          <AvatarFallback>{conversation.patient.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                        </Avatar>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between">
-                            <h4 className="font-medium text-foreground truncate">{conversation.patient}</h4>
-                            {conversation.unread > 0 && (
-                              <Badge variant="default" className="text-xs">
-                                {conversation.unread}
-                              </Badge>
-                            )}
-                          </div>
-                          <div className="flex items-center space-x-2 mb-1">
-                            <Badge variant="outline" className="text-xs">{conversation.ehrSystem}</Badge>
-                            {conversation.priority === 'high' && (
-                              <Badge variant="destructive" className="text-xs">High Priority</Badge>
-                            )}
-                          </div>
-                          <p className="text-sm text-muted-foreground truncate">{conversation.lastMessage}</p>
-                          <p className="text-xs text-muted-foreground mt-1">{conversation.timestamp}</p>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+            <MessageList 
+              key={refreshKey}
+              selectedMessageId={selectedMessage?.id}
+              onSelectMessage={setSelectedMessage}
+            />
           </div>
 
           {/* Message Detail */}
           <div className="lg:col-span-2">
-            <Card className="h-[600px] flex flex-col">
-              <CardHeader className="border-b border-border">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <Avatar>
-                      <AvatarImage src="/placeholder-patient1.jpg" />
-                      <AvatarFallback>ER</AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <h3 className="font-semibold text-foreground">Emily Rodriguez</h3>
-                      <div className="flex items-center space-x-2">
-                        <Badge variant="outline" className="text-xs">Epic MyChart</Badge>
-                        <span className="text-xs text-muted-foreground">Last seen 2 hours ago</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex space-x-2">
-                    <Button variant="outline" size="sm">
-                      <Star className="w-4 h-4" />
-                    </Button>
-                    <Button variant="outline" size="sm">
-                      <Archive className="w-4 h-4" />
-                    </Button>
-                  </div>
-                </div>
-              </CardHeader>
-
-              {/* Messages */}
-              <div className="flex-1 p-4 overflow-y-auto space-y-4">
-                {/* Patient Message */}
-                <div className="flex justify-start">
-                  <div className="max-w-[70%] bg-muted p-3 rounded-lg">
-                    <p className="text-sm text-foreground">Hi Dr. Chen, I wanted to follow up on our last appointment. The new medication you prescribed is working really well. My blood pressure readings have been much more stable.</p>
-                    <p className="text-xs text-muted-foreground mt-2">Yesterday, 3:45 PM</p>
-                  </div>
-                </div>
-
-                {/* Provider Response */}
-                <div className="flex justify-end">
-                  <div className="max-w-[70%] bg-primary text-primary-foreground p-3 rounded-lg">
-                    <p className="text-sm">That's excellent news, Emily! I'm glad to hear the medication is working well for you. Please continue monitoring your blood pressure and let me know if you have any concerns.</p>
-                    <p className="text-xs text-primary-foreground/70 mt-2">Yesterday, 4:12 PM</p>
-                  </div>
-                </div>
-
-                {/* Patient Latest Message */}
-                <div className="flex justify-start">
-                  <div className="max-w-[70%] bg-muted p-3 rounded-lg">
-                    <p className="text-sm text-foreground">Thank you for adjusting my medication. The new dosage is working much better. Should I schedule my next appointment for the usual 3-month follow-up?</p>
-                    <p className="text-xs text-muted-foreground mt-2">2 hours ago</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Message Input */}
-              <div className="border-t border-border p-4">
-                <div className="flex items-center space-x-2">
-                  <Button variant="outline" size="sm">
-                    <Paperclip className="w-4 h-4" />
-                  </Button>
-                  <Input 
-                    placeholder="Type your secure message..." 
-                    className="flex-1"
-                  />
-                  <Button size="sm">
-                    <Send className="w-4 h-4" />
-                  </Button>
-                </div>
-                <p className="text-xs text-muted-foreground mt-2 flex items-center">
-                  <Shield className="w-3 h-3 mr-1" />
-                  All messages are encrypted and HIPAA compliant
-                </p>
-              </div>
-            </Card>
+            <MessageDetail 
+              message={selectedMessage}
+              onRefresh={handleRefresh}
+            />
           </div>
         </div>
+
+        {/* New Message Dialog */}
+        <NewMessageDialog 
+          open={showNewMessage}
+          onOpenChange={setShowNewMessage}
+        />
 
         {/* Message Features */}
         <Tabs defaultValue="features" className="w-full">
