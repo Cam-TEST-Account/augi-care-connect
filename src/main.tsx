@@ -2,12 +2,12 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
-import { SecurePasswordProtection } from "@/components/auth/SecurePasswordProtection";
+import { PasswordProtection } from "@/components/auth/PasswordProtection";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <SecurePasswordProtection>
+    <PasswordProtection>
       <App />
-    </SecurePasswordProtection>
+    </PasswordProtection>
   </StrictMode>
 );

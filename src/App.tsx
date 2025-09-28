@@ -63,7 +63,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
         .maybeSingle();
 
       if (error) {
-        console.error('Error checking onboarding status:', error);
+        // If error checking onboarding, assume incomplete for safety
         setOnboardingComplete(false);
         return;
       }
@@ -89,6 +89,59 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
+// Route Handler Component - Determines initial route based on auth status
+const RouteHandler = () => {
+  const { user, loading } = useAuth();
+  const [onboardingComplete, setOnboardingComplete] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    if (!user) {
+      setOnboardingComplete(null);
+      return;
+    }
+
+    const checkOnboardingStatus = async () => {
+      const { data, error } = await supabase
+        .from('provider_profiles')
+        .select('onboarding_completed')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      if (error) {
+        // If error or no profile, assume onboarding needed
+        setOnboardingComplete(false);
+        return;
+      }
+
+      setOnboardingComplete(data?.onboarding_completed || false);
+    };
+
+    checkOnboardingStatus();
+  }, [user]);
+
+  if (loading) {
+    return <LoadingScreen />;
+  }
+
+  // If no user, show auth page
+  if (!user) {
+    return <Auth />;
+  }
+
+  // If user exists but onboarding status unknown, show loading
+  if (onboardingComplete === null) {
+    return <LoadingScreen />;
+  }
+
+  // If onboarding incomplete, show onboarding
+  if (!onboardingComplete) {
+    return <OnboardingFlow />;
+  }
+
+  // If everything is complete, show main dashboard
+  return <Index />;
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
@@ -97,9 +150,9 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
+            <Route path="/" element={<RouteHandler />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/onboarding" element={<OnboardingRoute />} />
-            <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
             <Route path="/patients" element={<ProtectedRoute><Patients /></ProtectedRoute>} />
             <Route path="/appointments" element={<ProtectedRoute><Appointments /></ProtectedRoute>} />
             <Route path="/telehealth" element={<ProtectedRoute><Telehealth /></ProtectedRoute>} />
