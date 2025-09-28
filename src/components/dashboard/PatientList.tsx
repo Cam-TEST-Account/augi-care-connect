@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -11,6 +12,7 @@ import {
   Video,
   Clock
 } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 const patients = [
   {
@@ -58,12 +60,47 @@ const getRiskBadgeVariant = (risk: string) => {
 };
 
 export const PatientList: React.FC = () => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const handleViewAll = () => {
+    navigate('/patients');
+  };
+
+  const handleTelehealthCall = (patient: typeof patients[0]) => {
+    navigate('/telehealth', { state: { patient } });
+    toast({
+      title: 'Starting Telehealth Session',
+      description: `Connecting with ${patient.name}...`,
+    });
+  };
+
+  const handleOpenChat = (patient: typeof patients[0]) => {
+    navigate('/messages', { state: { selectedPatient: patient } });
+    toast({
+      title: 'Opening Messages',
+      description: `Viewing conversation with ${patient.name}`,
+    });
+  };
+
+  const handleViewNotes = (patient: typeof patients[0]) => {
+    navigate('/records', { state: { selectedPatient: patient } });
+    toast({
+      title: 'Opening Medical Records',
+      description: `Viewing records for ${patient.name}`,
+    });
+  };
+
+  const handlePatientClick = (patient: typeof patients[0]) => {
+    navigate('/patients', { state: { selectedPatient: patient } });
+  };
+
   return (
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <span>Active Patients</span>
-          <Button size="sm">View All</Button>
+          <Button size="sm" onClick={handleViewAll}>View All</Button>
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -72,6 +109,7 @@ export const PatientList: React.FC = () => {
             <div 
               key={patient.id} 
               className="p-4 border border-border rounded-lg bg-gradient-card hover:shadow-soft transition-all cursor-pointer"
+              onClick={() => handlePatientClick(patient)}
             >
               <div className="flex items-start justify-between">
                 <div className="flex items-start space-x-3">
@@ -98,13 +136,37 @@ export const PatientList: React.FC = () => {
                 </div>
                 
                 <div className="flex space-x-2">
-                  <Button variant="outline" size="sm">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleTelehealthCall(patient);
+                    }}
+                    title="Start Telehealth Call"
+                  >
                     <Video className="w-4 h-4" />
                   </Button>
-                  <Button variant="outline" size="sm">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleOpenChat(patient);
+                    }}
+                    title="Open Chat"
+                  >
                     <MessageSquare className="w-4 h-4" />
                   </Button>
-                  <Button variant="outline" size="sm">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleViewNotes(patient);
+                    }}
+                    title="View Medical Notes"
+                  >
                     <FileText className="w-4 h-4" />
                   </Button>
                 </div>
