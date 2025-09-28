@@ -54,8 +54,8 @@ export const useTestDataSeeding = () => {
           }
 
           toast({
-            title: "Welcome to AugiCare!",
-            description: "We've added some test patients so you can explore the system. You can remove them anytime.",
+            title: "Welcome to AugiCare! 🎉",
+            description: "Sample test data has been added to help you explore. Real patient data will appear here once you start using the system.",
           });
         }
 
