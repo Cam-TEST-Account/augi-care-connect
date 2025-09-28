@@ -6,13 +6,13 @@ import {
   TrendingUp, 
   Users, 
   Activity,
-  Heart,
   Brain,
   BarChart3,
   PieChart,
   Calendar,
   Target
 } from 'lucide-react';
+import augiLogo from '@/assets/augi-logo.png';
 
 const Analytics = () => {
   return (
@@ -286,7 +286,7 @@ const Analytics = () => {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center">
-                    <Heart className="w-5 h-5 mr-2 text-primary" />
+                    <img src={augiLogo} alt="Augi" className="w-5 h-5 mr-2" />
                     Clinical Outcomes
                   </CardTitle>
                 </CardHeader>

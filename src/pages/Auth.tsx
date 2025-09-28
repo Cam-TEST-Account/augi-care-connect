@@ -7,8 +7,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Loader2, Heart, Shield, Users } from 'lucide-react';
+import { Loader2, Shield, Users } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import augiLogo from '@/assets/augi-logo.png';
 
 const Auth = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -115,7 +116,7 @@ const Auth = () => {
       <div className="lg:w-1/2 bg-gradient-primary flex items-center justify-center p-8">
         <div className="max-w-md text-center text-white">
           <div className="flex items-center justify-center mb-6">
-            <Heart className="w-12 h-12 mr-3" />
+            <img src={augiLogo} alt="Augi Logo" className="w-12 h-12 mr-3" />
             <h1 className="text-4xl font-bold">AugiCare</h1>
           </div>
           <p className="text-xl mb-8 text-white/90">
@@ -132,7 +133,7 @@ const Auth = () => {
               <span>Cross-EHR provider communication</span>
             </div>
             <div className="flex items-center">
-              <Heart className="w-6 h-6 mr-3 text-primary-glow" />
+              <img src={augiLogo} alt="Augi" className="w-6 h-6 mr-3" />
               <span>Integrated telehealth & prescriptions</span>
             </div>
           </div>

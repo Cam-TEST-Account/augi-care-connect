@@ -22,15 +22,13 @@ All colors MUST be HSL.
     --primary-foreground: 0 0% 100%;
     --primary-glow: 171 100% 20%;
     
-    /* Healthcare-focused Secondary */
-    --secondary: 210 40% 98%;
-    --secondary-foreground: 210 24% 16%;
-
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 47%;
-
-    --accent: 159 40% 95%;
-    --accent-foreground: 159 61% 30%;
+    /* Sage Green Secondary */
+    --secondary: 119 22% 45%;
+    --secondary-foreground: 0 0% 100%;
+    
+    /* Light Cream Accent */
+    --accent: 60 19% 92%;
+    --accent-foreground: 171 100% 11%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;

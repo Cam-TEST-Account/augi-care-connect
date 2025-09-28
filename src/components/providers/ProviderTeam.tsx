@@ -10,9 +10,9 @@ import {
   UserPlus,
   Shield,
   Stethoscope,
-  Heart,
   Brain
 } from 'lucide-react';
+import augiLogo from '@/assets/augi-logo.png';
 
 const teamMembers = [
   {
@@ -23,7 +23,7 @@ const teamMembers = [
     status: 'online',
     patients: 247,
     avatar: '/placeholder-dr1.jpg',
-    icon: Heart
+    icon: Stethoscope
   },
   {
     id: 2,
@@ -83,7 +83,11 @@ export const ProviderTeam: React.FC = () => {
                       <AvatarFallback>{member.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                     </Avatar>
                     <div className="absolute -bottom-1 -right-1 p-1 bg-primary rounded-full">
-                      <member.icon className="w-3 h-3 text-primary-foreground" />
+                      {member.id === 1 ? (
+                        <img src={augiLogo} alt="Augi" className="w-3 h-3" />
+                      ) : (
+                        <member.icon className="w-3 h-3 text-primary-foreground" />
+                      )}
                     </div>
                   </div>
                   <div>
