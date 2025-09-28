@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -6,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AppointmentCalendar } from '@/components/appointments/AppointmentCalendar';
+import { useToast } from '@/hooks/use-toast';
 import { 
   Calendar, 
   Clock, 
@@ -22,7 +24,7 @@ import {
 const appointments = [
   {
     id: 1,
-    patient: 'Emily Rodriguez',
+    patient: 'Emily Rodriguez (Test Patient)',
     time: '9:00 AM',
     duration: '30 min',
     type: 'Follow-up',
@@ -33,7 +35,7 @@ const appointments = [
   },
   {
     id: 2,
-    patient: 'Michael Thompson',
+    patient: 'Michael Thompson (Test Patient)',
     time: '10:30 AM', 
     duration: '45 min',
     type: 'Consultation',
@@ -44,7 +46,7 @@ const appointments = [
   },
   {
     id: 3,
-    patient: 'Sarah Williams',
+    patient: 'Sarah Williams (Test Patient)',
     time: '2:00 PM',
     duration: '30 min',
     type: 'Initial Visit',
@@ -56,6 +58,9 @@ const appointments = [
 ];
 
 const AppointmentCard = ({ appointment }: { appointment: typeof appointments[0] }) => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'Confirmed': return 'bg-success/10 text-success border-success';
@@ -67,6 +72,21 @@ const AppointmentCard = ({ appointment }: { appointment: typeof appointments[0] 
 
   const getModeIcon = (mode: string) => {
     return mode === 'Telehealth' ? Video : MapPin;
+  };
+
+  const handleJoinTelehealth = () => {
+    navigate('/telehealth', { state: { appointment } });
+    toast({
+      title: 'Joining Telehealth Session',
+      description: `Starting video call with ${appointment.patient}`,
+    });
+  };
+
+  const handleReschedule = () => {
+    toast({
+      title: 'Reschedule Appointment',
+      description: `Opening scheduling for ${appointment.patient}`,
+    });
   };
 
   const ModeIcon = getModeIcon(appointment.mode);
@@ -104,12 +124,22 @@ const AppointmentCard = ({ appointment }: { appointment: typeof appointments[0] 
           </div>
           <div className="flex space-x-2">
             {appointment.mode === 'Telehealth' && (
-              <Button size="sm" variant="outline">
+              <Button 
+                size="sm" 
+                variant="outline"
+                onClick={handleJoinTelehealth}
+              >
                 <Video className="w-4 h-4 mr-1" />
                 Join
               </Button>
             )}
-            <Button size="sm" variant="ghost">Reschedule</Button>
+            <Button 
+              size="sm" 
+              variant="ghost"
+              onClick={handleReschedule}
+            >
+              Reschedule
+            </Button>
           </div>
         </div>
       </CardContent>
@@ -119,6 +149,16 @@ const AppointmentCard = ({ appointment }: { appointment: typeof appointments[0] 
 
 const Appointments = () => {
   const [showCalendar, setShowCalendar] = useState(false);
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const handleScheduleAppointment = () => {
+    toast({
+      title: 'Schedule New Appointment',
+      description: 'Opening appointment scheduler...',
+    });
+  };
+
   return (
     <DashboardLayout>
       <div className="space-y-6">
@@ -132,7 +172,7 @@ const Appointments = () => {
               <CalendarDays className="w-4 h-4 mr-2" />
               Full Calendar
             </Button>
-            <Button>
+            <Button onClick={handleScheduleAppointment}>
               <Plus className="w-4 h-4 mr-2" />
               Schedule Appointment
             </Button>

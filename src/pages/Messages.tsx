@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -15,9 +16,22 @@ import {
 } from 'lucide-react';
 
 const Messages = () => {
+  const location = useLocation();
   const [showNewMessage, setShowNewMessage] = useState(false);
   const [selectedMessage, setSelectedMessage] = useState<any>(null);
   const [refreshKey, setRefreshKey] = useState(0);
+
+  // Get patient or provider data from navigation
+  const selectedPatient = location.state?.selectedPatient;
+  const provider = location.state?.provider;
+  const patient = location.state?.patient;
+
+  // Open new message dialog if we have a preselected patient
+  useEffect(() => {
+    if (selectedPatient || (provider && patient)) {
+      setShowNewMessage(true);
+    }
+  }, [selectedPatient, provider, patient]);
 
   const handleRefresh = () => {
     setRefreshKey(prev => prev + 1);
@@ -28,7 +42,11 @@ const Messages = () => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-foreground">Secure Messages</h1>
-            <p className="text-muted-foreground">HIPAA-compliant patient communication across all EHR systems</p>
+            <p className="text-muted-foreground">
+              HIPAA-compliant patient communication across all EHR systems
+              {selectedPatient && ` - New message to ${selectedPatient.name}`}
+              {provider && patient && ` - New message between ${provider.name} and ${patient.name}`}
+            </p>
           </div>
           <Button onClick={() => setShowNewMessage(true)}>
             <Plus className="w-4 h-4 mr-2" />
@@ -59,6 +77,7 @@ const Messages = () => {
         <NewMessageDialog 
           open={showNewMessage}
           onOpenChange={setShowNewMessage}
+          preselectedPatientId={selectedPatient?.id || patient?.id}
         />
 
         {/* Message Features */}

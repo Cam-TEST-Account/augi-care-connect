@@ -1,10 +1,12 @@
 import React from 'react';
+import { useLocation } from 'react-router-dom';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { TelehealthPanel } from '@/components/telehealth/TelehealthPanel';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useToast } from '@/hooks/use-toast';
 import { 
   Video, 
   Users, 
@@ -17,20 +19,37 @@ import {
 } from 'lucide-react';
 
 const Telehealth = () => {
+  const location = useLocation();
+  const { toast } = useToast();
+  
+  // Get patient or appointment data from navigation
+  const patient = location.state?.patient;
+  const appointment = location.state?.appointment;
+
+  const handleTelehealthSettings = () => {
+    toast({
+      title: 'Telehealth Settings',
+      description: 'Opening video and audio configuration...',
+    });
+  };
+
   return (
     <DashboardLayout>
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-foreground">Telehealth Center</h1>
-            <p className="text-muted-foreground">Secure, HIPAA-compliant virtual consultations</p>
+            <p className="text-muted-foreground">
+              Secure, HIPAA-compliant virtual consultations
+              {patient && ` - Active session with ${patient.name}`}
+            </p>
           </div>
           <div className="flex items-center space-x-3">
             <Badge variant="outline" className="text-success border-success">
               <Signal className="w-3 h-3 mr-1" />
               Online
             </Badge>
-            <Button variant="outline">
+            <Button variant="outline" onClick={handleTelehealthSettings}>
               <Settings className="w-4 h-4 mr-2" />
               Settings
             </Button>

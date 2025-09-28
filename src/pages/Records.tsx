@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useToast } from '@/hooks/use-toast';
 import { 
   FileText, 
   Search, 
@@ -21,20 +23,60 @@ import {
 } from 'lucide-react';
 
 const Records = () => {
+  const location = useLocation();
+  const { toast } = useToast();
+  const [searchTerm, setSearchTerm] = useState('');
+  
+  // Get patient and section data from navigation
+  const patient = location.state?.patient;
+  const section = location.state?.section;
+
+  const handleFilters = () => {
+    toast({
+      title: 'Advanced Filters',
+      description: 'Opening record filter options...',
+    });
+  };
+
+  const handleExport = () => {
+    toast({
+      title: 'Exporting Records',
+      description: 'Preparing records for download...',
+    });
+  };
+
+  const handleViewRecord = (record: any) => {
+    toast({
+      title: 'Opening Record',
+      description: `Viewing ${record.type} for ${record.patient}`,
+    });
+  };
+
+  const handleShareRecord = (record: any) => {
+    toast({
+      title: 'Sharing Record',
+      description: `Sharing ${record.type} with care team`,
+    });
+  };
+
   return (
     <DashboardLayout>
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-foreground">Patient Records</h1>
-            <p className="text-muted-foreground">Unified view of patient data across all connected EHR systems</p>
+            <p className="text-muted-foreground">
+              Unified view of patient data across all connected EHR systems
+              {patient && ` - Viewing records for ${patient.name}`}
+              {section && ` (${section})`}
+            </p>
           </div>
           <div className="flex space-x-2">
-            <Button variant="outline">
+            <Button variant="outline" onClick={handleFilters}>
               <Filter className="w-4 h-4 mr-2" />
               Filters
             </Button>
-            <Button>
+            <Button onClick={handleExport}>
               <Download className="w-4 h-4 mr-2" />
               Export
             </Button>
@@ -51,6 +93,8 @@ const Records = () => {
                   <Input 
                     placeholder="Search records by patient, condition, date, or provider..." 
                     className="pl-10"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
                   />
                 </div>
               </CardContent>
@@ -80,7 +124,7 @@ const Records = () => {
             <div className="space-y-4">
               {[
                 {
-                  patient: 'Emily Rodriguez',
+                  patient: 'Emily Rodriguez (Test Patient)',
                   type: 'Lab Results',
                   date: '2024-01-20',
                   provider: 'Dr. Sarah Chen',
@@ -89,7 +133,7 @@ const Records = () => {
                   priority: 'High'
                 },
                 {
-                  patient: 'Michael Thompson',
+                  patient: 'Michael Thompson (Test Patient)',
                   type: 'Consultation Notes',
                   date: '2024-01-19',
                   provider: 'Dr. Jennifer Lee',
@@ -98,7 +142,7 @@ const Records = () => {
                   priority: 'Normal'
                 },
                 {
-                  patient: 'Sarah Williams',
+                  patient: 'Sarah Williams (Test Patient)',
                   type: 'Prescription',
                   date: '2024-01-18',
                   provider: 'Dr. Michael Roberts',
@@ -130,10 +174,18 @@ const Records = () => {
                       </div>
                       <div className="flex items-center space-x-2">
                         <span className="text-sm text-muted-foreground">{record.date}</span>
-                        <Button variant="outline" size="sm">
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => handleViewRecord(record)}
+                        >
                           <Eye className="w-4 h-4" />
                         </Button>
-                        <Button variant="outline" size="sm">
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => handleShareRecord(record)}
+                        >
                           <Share2 className="w-4 h-4" />
                         </Button>
                       </div>
@@ -147,9 +199,9 @@ const Records = () => {
           <TabsContent value="by-patient" className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[
-                { name: 'Emily Rodriguez', records: 23, lastUpdate: '2 hours ago', ehrSystems: ['Epic', 'Athena'] },
-                { name: 'Michael Thompson', records: 18, lastUpdate: '1 day ago', ehrSystems: ['Cerner', 'Epic'] },
-                { name: 'Sarah Williams', records: 31, lastUpdate: '3 hours ago', ehrSystems: ['Athena', 'NextGen'] }
+                { name: 'Emily Rodriguez (Test Patient)', records: 23, lastUpdate: '2 hours ago', ehrSystems: ['Epic', 'Athena'] },
+                { name: 'Michael Thompson (Test Patient)', records: 18, lastUpdate: '1 day ago', ehrSystems: ['Cerner', 'Epic'] },
+                { name: 'Sarah Williams (Test Patient)', records: 31, lastUpdate: '3 hours ago', ehrSystems: ['Athena', 'NextGen'] }
               ].map((patient, idx) => (
                 <Card key={idx} className="hover:shadow-soft transition-all cursor-pointer">
                   <CardContent className="p-6">

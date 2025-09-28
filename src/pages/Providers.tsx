@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -7,6 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { NPISearch } from '@/components/providers/NPISearch';
+import { useToast } from '@/hooks/use-toast';
 import { 
   Search, 
   MapPin, 
@@ -71,6 +73,31 @@ const providers = [
 ];
 
 const ProviderCard = ({ provider }: { provider: typeof providers[0] }) => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const handleBookAppointment = () => {
+    navigate('/appointments', { state: { provider } });
+    toast({
+      title: 'Booking Appointment',
+      description: `Opening scheduler for ${provider.name}`,
+    });
+  };
+
+  const handleCallOffice = () => {
+    toast({
+      title: 'Calling Office',
+      description: `Dialing ${provider.practice} office...`,
+    });
+  };
+
+  const handleViewProfile = () => {
+    toast({
+      title: 'Provider Profile',
+      description: `Opening detailed profile for ${provider.name}`,
+    });
+  };
+
   return (
     <Card className="hover:shadow-soft transition-all">
       <CardContent className="p-6">
@@ -127,15 +154,17 @@ const ProviderCard = ({ provider }: { provider: typeof providers[0] }) => {
             </div>
 
             <div className="mt-4 flex space-x-2">
-              <Button size="sm">
+              <Button size="sm" onClick={handleBookAppointment}>
                 <Calendar className="w-4 h-4 mr-2" />
                 Book Appointment
               </Button>
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" onClick={handleCallOffice}>
                 <Phone className="w-4 h-4 mr-2" />
                 Call Office
               </Button>
-              <Button variant="outline" size="sm">View Profile</Button>
+              <Button variant="outline" size="sm" onClick={handleViewProfile}>
+                View Profile
+              </Button>
             </div>
           </div>
         </div>
@@ -145,6 +174,19 @@ const ProviderCard = ({ provider }: { provider: typeof providers[0] }) => {
 };
 
 const Providers = () => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const [searchTerm, setSearchTerm] = useState('');
+  const [locationTerm, setLocationTerm] = useState('');
+  const [insuranceTerm, setInsuranceTerm] = useState('');
+
+  const handleAdvancedFilters = () => {
+    toast({
+      title: 'Advanced Filters',
+      description: 'Opening provider search filters...',
+    });
+  };
+
   return (
     <DashboardLayout>
       <div className="space-y-6">
@@ -153,7 +195,7 @@ const Providers = () => {
             <h1 className="text-3xl font-bold text-foreground">Provider Search</h1>
             <p className="text-muted-foreground">Find in-network providers with real-time availability and cost transparency</p>
           </div>
-          <Button>
+          <Button onClick={handleAdvancedFilters}>
             <Filter className="w-4 h-4 mr-2" />
             Advanced Filters
           </Button>
@@ -168,6 +210,8 @@ const Providers = () => {
                 <Input 
                   placeholder="Search by specialty, condition, or provider name..." 
                   className="pl-10"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
               <div className="relative">
@@ -175,6 +219,8 @@ const Providers = () => {
                 <Input 
                   placeholder="Location or ZIP code..." 
                   className="pl-10"
+                  value={locationTerm}
+                  onChange={(e) => setLocationTerm(e.target.value)}
                 />
               </div>
               <div className="relative">
@@ -182,6 +228,8 @@ const Providers = () => {
                 <Input 
                   placeholder="Insurance plan..." 
                   className="pl-10"
+                  value={insuranceTerm}
+                  onChange={(e) => setInsuranceTerm(e.target.value)}
                 />
               </div>
             </div>

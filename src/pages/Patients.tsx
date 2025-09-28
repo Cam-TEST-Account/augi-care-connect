@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -6,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useToast } from '@/hooks/use-toast';
 import { 
   Search, 
   Plus, 
@@ -26,7 +28,7 @@ import {
 const patients = [
   {
     id: 1,
-    name: 'Emily Rodriguez',
+    name: 'Emily Rodriguez (Test Patient)',
     age: 34,
     mrn: 'MRN-001234',
     lastVisit: '2024-01-15',
@@ -42,7 +44,7 @@ const patients = [
   },
   {
     id: 2,
-    name: 'Michael Thompson',
+    name: 'Michael Thompson (Test Patient)',
     age: 56,
     mrn: 'MRN-005678',
     lastVisit: '2024-01-10',
@@ -59,12 +61,58 @@ const patients = [
 ];
 
 const PatientCard = ({ patient }: { patient: typeof patients[0] }) => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
   const getRiskColor = (risk: string) => {
     switch (risk) {
       case 'Critical': return 'text-destructive border-destructive bg-destructive/10';
       case 'High': return 'text-warning border-warning bg-warning/10';
       default: return 'text-muted-foreground border-border';
     }
+  };
+
+  const handlePrescribe = () => {
+    navigate('/records', { state: { patient, section: 'prescriptions' } });
+    toast({
+      title: 'Opening Prescription Management',
+      description: `Managing prescriptions for ${patient.name}`,
+    });
+  };
+
+  const handleTelehealth = () => {
+    navigate('/telehealth', { state: { patient } });
+    toast({
+      title: 'Starting Telehealth Session',
+      description: `Connecting with ${patient.name}...`,
+    });
+  };
+
+  const handleShareCare = () => {
+    toast({
+      title: 'Care Team Coordination',
+      description: `Sharing care plan for ${patient.name} with team`,
+    });
+  };
+
+  const handleNotes = () => {
+    navigate('/records', { state: { patient, section: 'notes' } });
+    toast({
+      title: 'Opening Clinical Notes',
+      description: `Viewing notes for ${patient.name}`,
+    });
+  };
+
+  const handleProviderMessage = (provider: any) => {
+    navigate('/messages', { state: { provider, patient } });
+    toast({
+      title: 'Opening Provider Chat',
+      description: `Starting secure conversation with ${provider.name}`,
+    });
+  };
+
+  const handleViewFullRecord = () => {
+    navigate('/records', { state: { patient } });
   };
 
   return (
@@ -103,7 +151,12 @@ const PatientCard = ({ patient }: { patient: typeof patients[0] }) => {
                 </div>
                 <div className="flex items-center space-x-2">
                   <Badge variant="outline" className="text-xs">{provider.system}</Badge>
-                  <Button size="sm" variant="ghost">
+                  <Button 
+                    size="sm" 
+                    variant="ghost"
+                    onClick={() => handleProviderMessage(provider)}
+                    title={`Message ${provider.name}`}
+                  >
                     <MessageSquare className="w-3 h-3" />
                   </Button>
                 </div>
@@ -114,19 +167,39 @@ const PatientCard = ({ patient }: { patient: typeof patients[0] }) => {
 
         {/* Quick Actions */}
         <div className="grid grid-cols-4 gap-2 mb-4">
-          <Button size="sm" variant="outline" className="flex flex-col items-center p-3 h-auto">
+          <Button 
+            size="sm" 
+            variant="outline" 
+            className="flex flex-col items-center p-3 h-auto"
+            onClick={handlePrescribe}
+          >
             <Pill className="w-4 h-4 mb-1 text-primary" />
             <span className="text-xs">Prescribe</span>
           </Button>
-          <Button size="sm" variant="outline" className="flex flex-col items-center p-3 h-auto">
+          <Button 
+            size="sm" 
+            variant="outline" 
+            className="flex flex-col items-center p-3 h-auto"
+            onClick={handleTelehealth}
+          >
             <Video className="w-4 h-4 mb-1 text-primary" />
             <span className="text-xs">Telehealth</span>
           </Button>
-          <Button size="sm" variant="outline" className="flex flex-col items-center p-3 h-auto">
+          <Button 
+            size="sm" 
+            variant="outline" 
+            className="flex flex-col items-center p-3 h-auto"
+            onClick={handleShareCare}
+          >
             <Share2 className="w-4 h-4 mb-1 text-primary" />
             <span className="text-xs">Share Care</span>
           </Button>
-          <Button size="sm" variant="outline" className="flex flex-col items-center p-3 h-auto">
+          <Button 
+            size="sm" 
+            variant="outline" 
+            className="flex flex-col items-center p-3 h-auto"
+            onClick={handleNotes}
+          >
             <FileText className="w-4 h-4 mb-1 text-primary" />
             <span className="text-xs">Notes</span>
           </Button>
@@ -156,7 +229,7 @@ const PatientCard = ({ patient }: { patient: typeof patients[0] }) => {
             <Clock className="w-3 h-3 mr-1" />
             Last visit: {patient.lastVisit}
           </span>
-          <Button size="sm">View Full Record</Button>
+          <Button size="sm" onClick={handleViewFullRecord}>View Full Record</Button>
         </div>
       </CardContent>
     </Card>
@@ -164,6 +237,35 @@ const PatientCard = ({ patient }: { patient: typeof patients[0] }) => {
 };
 
 const Patients = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { toast } = useToast();
+  const [searchTerm, setSearchTerm] = useState('');
+  
+  // Check if we have a selected patient from navigation
+  const selectedPatient = location.state?.selectedPatient;
+
+  const handleAddPatient = () => {
+    toast({
+      title: 'Add New Patient',
+      description: 'Opening patient registration form...',
+    });
+    // Here you would typically open a modal or navigate to a form
+  };
+
+  const handleFilters = () => {
+    toast({
+      title: 'Advanced Filters',
+      description: 'Opening filter options...',
+    });
+  };
+
+  const filteredPatients = patients.filter(patient =>
+    patient.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    patient.mrn.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    patient.condition.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <DashboardLayout>
       <div className="space-y-6">
@@ -172,7 +274,7 @@ const Patients = () => {
             <h1 className="text-3xl font-bold text-foreground">Patient Management</h1>
             <p className="text-muted-foreground">Unified care across multiple EHR systems</p>
           </div>
-          <Button>
+          <Button onClick={handleAddPatient}>
             <Plus className="w-4 h-4 mr-2" />
             Add Patient
           </Button>
@@ -187,9 +289,11 @@ const Patients = () => {
                 <Input 
                   placeholder="Search patients by name, MRN, or condition..." 
                   className="pl-10"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
-              <Button variant="outline">
+              <Button variant="outline" onClick={handleFilters}>
                 <Filter className="w-4 h-4 mr-2" />
                 Filters
               </Button>
@@ -207,8 +311,17 @@ const Patients = () => {
           </TabsList>
           
           <TabsContent value="all" className="space-y-4">
+            {selectedPatient && (
+              <Card className="border-primary/50 bg-primary/5">
+                <CardContent className="p-4">
+                  <p className="text-sm font-medium text-primary">
+                    Viewing details for: {selectedPatient.name}
+                  </p>
+                </CardContent>
+              </Card>
+            )}
             <div className="grid gap-6">
-              {patients.map((patient) => (
+              {filteredPatients.map((patient) => (
                 <PatientCard key={patient.id} patient={patient} />
               ))}
             </div>
@@ -216,7 +329,7 @@ const Patients = () => {
           
           <TabsContent value="critical" className="space-y-4">
             <div className="grid gap-6">
-              {patients.filter(p => p.riskScore === 'Critical').map((patient) => (
+              {filteredPatients.filter(p => p.riskScore === 'Critical').map((patient) => (
                 <PatientCard key={patient.id} patient={patient} />
               ))}
             </div>
