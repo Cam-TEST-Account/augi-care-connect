@@ -317,6 +317,62 @@ export type Database = {
         }
         Relationships: []
       }
+      invitations: {
+        Row: {
+          accepted_at: string | null
+          accepted_by_user_id: string | null
+          admin_type: string | null
+          created_at: string
+          email: string
+          expires_at: string
+          id: string
+          invitation_token: string
+          invited_by_user_id: string
+          invited_role: Database["public"]["Enums"]["user_role"]
+          organization_id: string
+          specialties: string[] | null
+          updated_at: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          accepted_by_user_id?: string | null
+          admin_type?: string | null
+          created_at?: string
+          email: string
+          expires_at?: string
+          id?: string
+          invitation_token?: string
+          invited_by_user_id: string
+          invited_role: Database["public"]["Enums"]["user_role"]
+          organization_id: string
+          specialties?: string[] | null
+          updated_at?: string
+        }
+        Update: {
+          accepted_at?: string | null
+          accepted_by_user_id?: string | null
+          admin_type?: string | null
+          created_at?: string
+          email?: string
+          expires_at?: string
+          id?: string
+          invitation_token?: string
+          invited_by_user_id?: string
+          invited_role?: Database["public"]["Enums"]["user_role"]
+          organization_id?: string
+          specialties?: string[] | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invitations_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lab_results: {
         Row: {
           abnormal_flag: boolean | null
@@ -689,6 +745,7 @@ export type Database = {
       }
       provider_profiles: {
         Row: {
+          admin_type: string | null
           created_at: string | null
           department: string | null
           email: string
@@ -706,11 +763,13 @@ export type Database = {
           professional_email: string | null
           professional_phone: string | null
           role: Database["public"]["Enums"]["provider_role"]
+          specialties: string[] | null
           specialty: string | null
           updated_at: string | null
           user_id: string
         }
         Insert: {
+          admin_type?: string | null
           created_at?: string | null
           department?: string | null
           email: string
@@ -728,11 +787,13 @@ export type Database = {
           professional_email?: string | null
           professional_phone?: string | null
           role?: Database["public"]["Enums"]["provider_role"]
+          specialties?: string[] | null
           specialty?: string | null
           updated_at?: string | null
           user_id: string
         }
         Update: {
+          admin_type?: string | null
           created_at?: string | null
           department?: string | null
           email?: string
@@ -750,6 +811,7 @@ export type Database = {
           professional_email?: string | null
           professional_phone?: string | null
           role?: Database["public"]["Enums"]["provider_role"]
+          specialties?: string[] | null
           specialty?: string | null
           updated_at?: string | null
           user_id?: string
@@ -1038,6 +1100,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      accept_invitation: {
+        Args: { _token: string; _user_id: string }
+        Returns: Json
+      }
       can_access_patient_data: {
         Args: { _organization_id: string; _user_id: string }
         Returns: boolean

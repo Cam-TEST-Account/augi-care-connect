@@ -1,4 +1,7 @@
-import React from 'react';
+import { useState, useEffect } from 'react';
+import { InvitationManager } from '@/components/admin/InvitationManager';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -18,6 +21,35 @@ import {
 } from 'lucide-react';
 
 const Settings = () => {
+  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
+  const { user } = useAuth();
+
+  useEffect(() => {
+    const checkSuperAdminStatus = async () => {
+      if (!user) return;
+
+      try {
+        const { data: userOrg } = await supabase.rpc('get_user_organization', {
+          _user_id: user.id
+        });
+
+        if (userOrg) {
+          const { data: hasRole } = await supabase.rpc('has_organization_role', {
+            _user_id: user.id,
+            _organization_id: userOrg,
+            _role: 'super_admin'
+          });
+
+          setIsSuperAdmin(hasRole || false);
+        }
+      } catch (error) {
+        console.error('Error checking super admin status:', error);
+      }
+    };
+
+    checkSuperAdminStatus();
+  }, [user]);
+
   return (
     <DashboardLayout>
       <div className="space-y-6">
@@ -29,13 +61,14 @@ const Settings = () => {
         </div>
 
         <Tabs defaultValue="profile" className="w-full">
-          <TabsList className="grid w-full grid-cols-6">
+          <TabsList className={`grid w-full ${isSuperAdmin ? 'grid-cols-7' : 'grid-cols-6'}`}>
             <TabsTrigger value="profile">Profile</TabsTrigger>
             <TabsTrigger value="notifications">Notifications</TabsTrigger>
             <TabsTrigger value="security">Security</TabsTrigger>
             <TabsTrigger value="integrations">Integrations</TabsTrigger>
             <TabsTrigger value="appearance">Appearance</TabsTrigger>
             <TabsTrigger value="system">System</TabsTrigger>
+            {isSuperAdmin && <TabsTrigger value="team">Team</TabsTrigger>}
           </TabsList>
           
           <TabsContent value="profile" className="space-y-6">
@@ -448,6 +481,12 @@ const Settings = () => {
               </CardContent>
             </Card>
           </TabsContent>
+
+          {isSuperAdmin && (
+            <TabsContent value="team" className="space-y-6">
+              <InvitationManager />
+            </TabsContent>
+          )}
         </Tabs>
       </div>
     </DashboardLayout>
