@@ -8,9 +8,13 @@ import { ProviderTeam } from '@/components/providers/ProviderTeam';
 import { CompliancePanel } from '@/components/compliance/CompliancePanel';
 import { useAuth } from '@/hooks/useAuth';
 import { getGreetingMessage } from '@/utils/userUtils';
+import { useTestDataSeeding } from '@/hooks/useTestDataSeeding';
 
 const Index = () => {
   const { user } = useAuth();
+  
+  // Automatically seed test data for new users
+  useTestDataSeeding();
   
   return (
     <DashboardLayout>
