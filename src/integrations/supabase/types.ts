@@ -22,6 +22,7 @@ export type Database = {
           duration_minutes: number | null
           id: string
           notes: string | null
+          organization_id: string | null
           patient_id: string
           provider_id: string
           scheduled_date: string
@@ -38,6 +39,7 @@ export type Database = {
           duration_minutes?: number | null
           id?: string
           notes?: string | null
+          organization_id?: string | null
           patient_id: string
           provider_id: string
           scheduled_date: string
@@ -54,6 +56,7 @@ export type Database = {
           duration_minutes?: number | null
           id?: string
           notes?: string | null
+          organization_id?: string | null
           patient_id?: string
           provider_id?: string
           scheduled_date?: string
@@ -64,6 +67,13 @@ export type Database = {
           visit_summary?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "appointments_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "appointments_patient_id_fkey"
             columns: ["patient_id"]
@@ -145,6 +155,7 @@ export type Database = {
           id: string
           is_signed: boolean | null
           note_type: string
+          organization_id: string | null
           patient_id: string
           provider_id: string
           signed_date: string | null
@@ -158,6 +169,7 @@ export type Database = {
           id?: string
           is_signed?: boolean | null
           note_type: string
+          organization_id?: string | null
           patient_id: string
           provider_id: string
           signed_date?: string | null
@@ -171,6 +183,7 @@ export type Database = {
           id?: string
           is_signed?: boolean | null
           note_type?: string
+          organization_id?: string | null
           patient_id?: string
           provider_id?: string
           signed_date?: string | null
@@ -183,6 +196,13 @@ export type Database = {
             columns: ["appointment_id"]
             isOneToOne: false
             referencedRelation: "appointments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clinical_notes_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
             referencedColumns: ["id"]
           },
           {
@@ -211,6 +231,7 @@ export type Database = {
           id: string
           is_active: boolean | null
           last_sync_date: string | null
+          organization_id: string | null
           patient_id: string
           provider_external_id: string
           provider_name: string
@@ -227,6 +248,7 @@ export type Database = {
           id?: string
           is_active?: boolean | null
           last_sync_date?: string | null
+          organization_id?: string | null
           patient_id: string
           provider_external_id: string
           provider_name: string
@@ -243,6 +265,7 @@ export type Database = {
           id?: string
           is_active?: boolean | null
           last_sync_date?: string | null
+          organization_id?: string | null
           patient_id?: string
           provider_external_id?: string
           provider_name?: string
@@ -251,6 +274,13 @@ export type Database = {
           token_expires_at?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "ehr_connections_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "ehr_connections_patient_id_fkey"
             columns: ["patient_id"]
@@ -296,6 +326,7 @@ export type Database = {
           lab_facility: string | null
           notes: string | null
           ordered_by_provider_id: string | null
+          organization_id: string | null
           patient_id: string
           reference_range: string | null
           result_value: string | null
@@ -313,6 +344,7 @@ export type Database = {
           lab_facility?: string | null
           notes?: string | null
           ordered_by_provider_id?: string | null
+          organization_id?: string | null
           patient_id: string
           reference_range?: string | null
           result_value?: string | null
@@ -330,6 +362,7 @@ export type Database = {
           lab_facility?: string | null
           notes?: string | null
           ordered_by_provider_id?: string | null
+          organization_id?: string | null
           patient_id?: string
           reference_range?: string | null
           result_value?: string | null
@@ -348,6 +381,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "lab_results_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "lab_results_patient_id_fkey"
             columns: ["patient_id"]
             isOneToOne: false
@@ -355,6 +395,54 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      organizations: {
+        Row: {
+          account_type: Database["public"]["Enums"]["account_type"]
+          address_line1: string | null
+          address_line2: string | null
+          billing_email: string | null
+          city: string | null
+          created_at: string | null
+          id: string
+          name: string
+          phone: string | null
+          state: string | null
+          subscription_status: Database["public"]["Enums"]["subscription_status"]
+          updated_at: string | null
+          zip_code: string | null
+        }
+        Insert: {
+          account_type: Database["public"]["Enums"]["account_type"]
+          address_line1?: string | null
+          address_line2?: string | null
+          billing_email?: string | null
+          city?: string | null
+          created_at?: string | null
+          id?: string
+          name: string
+          phone?: string | null
+          state?: string | null
+          subscription_status?: Database["public"]["Enums"]["subscription_status"]
+          updated_at?: string | null
+          zip_code?: string | null
+        }
+        Update: {
+          account_type?: Database["public"]["Enums"]["account_type"]
+          address_line1?: string | null
+          address_line2?: string | null
+          billing_email?: string | null
+          city?: string | null
+          created_at?: string | null
+          id?: string
+          name?: string
+          phone?: string | null
+          state?: string | null
+          subscription_status?: Database["public"]["Enums"]["subscription_status"]
+          updated_at?: string | null
+          zip_code?: string | null
+        }
+        Relationships: []
       }
       patients: {
         Row: {
@@ -376,6 +464,7 @@ export type Database = {
           last_visit_date: string | null
           mrn: string | null
           next_appointment_date: string | null
+          organization_id: string | null
           phone: string | null
           primary_provider_id: string | null
           risk_level: Database["public"]["Enums"]["risk_level"] | null
@@ -404,6 +493,7 @@ export type Database = {
           last_visit_date?: string | null
           mrn?: string | null
           next_appointment_date?: string | null
+          organization_id?: string | null
           phone?: string | null
           primary_provider_id?: string | null
           risk_level?: Database["public"]["Enums"]["risk_level"] | null
@@ -432,6 +522,7 @@ export type Database = {
           last_visit_date?: string | null
           mrn?: string | null
           next_appointment_date?: string | null
+          organization_id?: string | null
           phone?: string | null
           primary_provider_id?: string | null
           risk_level?: Database["public"]["Enums"]["risk_level"] | null
@@ -442,6 +533,13 @@ export type Database = {
           zip_code?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "patients_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "patients_primary_provider_id_fkey"
             columns: ["primary_provider_id"]
@@ -464,6 +562,7 @@ export type Database = {
           is_controlled: boolean | null
           medication_name: string
           ndc_code: string | null
+          organization_id: string | null
           patient_id: string
           pharmacy_name: string | null
           pharmacy_phone: string | null
@@ -486,6 +585,7 @@ export type Database = {
           is_controlled?: boolean | null
           medication_name: string
           ndc_code?: string | null
+          organization_id?: string | null
           patient_id: string
           pharmacy_name?: string | null
           pharmacy_phone?: string | null
@@ -508,6 +608,7 @@ export type Database = {
           is_controlled?: boolean | null
           medication_name?: string
           ndc_code?: string | null
+          organization_id?: string | null
           patient_id?: string
           pharmacy_name?: string | null
           pharmacy_phone?: string | null
@@ -519,6 +620,13 @@ export type Database = {
           status?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "prescriptions_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "prescriptions_patient_id_fkey"
             columns: ["patient_id"]
@@ -547,6 +655,7 @@ export type Database = {
           license_number: string | null
           license_state: string | null
           npi_number: string | null
+          organization_id: string | null
           organization_name: string | null
           phone: string | null
           role: Database["public"]["Enums"]["provider_role"]
@@ -565,6 +674,7 @@ export type Database = {
           license_number?: string | null
           license_state?: string | null
           npi_number?: string | null
+          organization_id?: string | null
           organization_name?: string | null
           phone?: string | null
           role?: Database["public"]["Enums"]["provider_role"]
@@ -583,6 +693,7 @@ export type Database = {
           license_number?: string | null
           license_state?: string | null
           npi_number?: string | null
+          organization_id?: string | null
           organization_name?: string | null
           phone?: string | null
           role?: Database["public"]["Enums"]["provider_role"]
@@ -590,7 +701,15 @@ export type Database = {
           updated_at?: string | null
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "provider_profiles_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       secure_messages: {
         Row: {
@@ -602,6 +721,7 @@ export type Database = {
           is_urgent: boolean | null
           message_body: string
           message_type: Database["public"]["Enums"]["message_type"] | null
+          organization_id: string | null
           parent_message_id: string | null
           patient_id: string
           read_date: string | null
@@ -618,6 +738,7 @@ export type Database = {
           is_urgent?: boolean | null
           message_body: string
           message_type?: Database["public"]["Enums"]["message_type"] | null
+          organization_id?: string | null
           parent_message_id?: string | null
           patient_id: string
           read_date?: string | null
@@ -634,6 +755,7 @@ export type Database = {
           is_urgent?: boolean | null
           message_body?: string
           message_type?: Database["public"]["Enums"]["message_type"] | null
+          organization_id?: string | null
           parent_message_id?: string | null
           patient_id?: string
           read_date?: string | null
@@ -642,6 +764,13 @@ export type Database = {
           subject?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "secure_messages_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "secure_messages_parent_message_id_fkey"
             columns: ["parent_message_id"]
@@ -672,6 +801,103 @@ export type Database = {
           },
         ]
       }
+      subscriptions: {
+        Row: {
+          account_type: Database["public"]["Enums"]["account_type"]
+          administrator_price_per_seat: number
+          administrator_seats: number
+          billing_cycle: string
+          created_at: string | null
+          id: string
+          next_billing_date: string | null
+          organization_id: string
+          physician_price_per_seat: number
+          physician_seats: number
+          super_admin_price_per_seat: number
+          super_admin_seats: number
+          updated_at: string | null
+        }
+        Insert: {
+          account_type: Database["public"]["Enums"]["account_type"]
+          administrator_price_per_seat: number
+          administrator_seats?: number
+          billing_cycle?: string
+          created_at?: string | null
+          id?: string
+          next_billing_date?: string | null
+          organization_id: string
+          physician_price_per_seat: number
+          physician_seats?: number
+          super_admin_price_per_seat: number
+          super_admin_seats?: number
+          updated_at?: string | null
+        }
+        Update: {
+          account_type?: Database["public"]["Enums"]["account_type"]
+          administrator_price_per_seat?: number
+          administrator_seats?: number
+          billing_cycle?: string
+          created_at?: string | null
+          id?: string
+          next_billing_date?: string | null
+          organization_id?: string
+          physician_price_per_seat?: number
+          physician_seats?: number
+          super_admin_price_per_seat?: number
+          super_admin_seats?: number
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscriptions_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          created_at: string | null
+          granted_by_user_id: string | null
+          id: string
+          is_active: boolean | null
+          organization_id: string
+          role: Database["public"]["Enums"]["user_role"]
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          granted_by_user_id?: string | null
+          id?: string
+          is_active?: boolean | null
+          organization_id: string
+          role: Database["public"]["Enums"]["user_role"]
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          granted_by_user_id?: string | null
+          id?: string
+          is_active?: boolean | null
+          organization_id?: string
+          role?: Database["public"]["Enums"]["user_role"]
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_roles_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       vital_signs: {
         Row: {
           blood_glucose: number | null
@@ -682,6 +908,7 @@ export type Database = {
           height_cm: number | null
           id: string
           notes: string | null
+          organization_id: string | null
           oxygen_saturation: number | null
           patient_id: string
           recorded_by_provider_id: string | null
@@ -700,6 +927,7 @@ export type Database = {
           height_cm?: number | null
           id?: string
           notes?: string | null
+          organization_id?: string | null
           oxygen_saturation?: number | null
           patient_id: string
           recorded_by_provider_id?: string | null
@@ -718,6 +946,7 @@ export type Database = {
           height_cm?: number | null
           id?: string
           notes?: string | null
+          organization_id?: string | null
           oxygen_saturation?: number | null
           patient_id?: string
           recorded_by_provider_id?: string | null
@@ -728,6 +957,13 @@ export type Database = {
           weight_kg?: number | null
         }
         Relationships: [
+          {
+            foreignKeyName: "vital_signs_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "vital_signs_patient_id_fkey"
             columns: ["patient_id"]
@@ -749,12 +985,40 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      can_access_patient_data: {
+        Args: { _organization_id: string; _user_id: string }
+        Returns: boolean
+      }
       cleanup_expired_oauth_sessions: {
         Args: Record<PropertyKey, never>
         Returns: undefined
       }
+      get_account_pricing: {
+        Args: { _account_type: Database["public"]["Enums"]["account_type"] }
+        Returns: {
+          administrator_price: number
+          max_administrators: number
+          max_physicians: number
+          max_super_admins: number
+          physician_price: number
+          super_admin_price: number
+        }[]
+      }
+      get_user_organization: {
+        Args: { _user_id: string }
+        Returns: string
+      }
+      has_organization_role: {
+        Args: {
+          _organization_id: string
+          _role: Database["public"]["Enums"]["user_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
+      account_type: "small_practice" | "enterprise_practice" | "hospital"
       appointment_status:
         | "scheduled"
         | "confirmed"
@@ -773,6 +1037,8 @@ export type Database = {
       patient_status: "active" | "inactive" | "deceased" | "transferred"
       provider_role: "physician" | "nurse" | "pa" | "np" | "admin" | "tech"
       risk_level: "low" | "medium" | "high" | "critical"
+      subscription_status: "active" | "suspended" | "cancelled" | "trial"
+      user_role: "super_admin" | "physician" | "administrator"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -900,6 +1166,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      account_type: ["small_practice", "enterprise_practice", "hospital"],
       appointment_status: [
         "scheduled",
         "confirmed",
@@ -920,6 +1187,8 @@ export const Constants = {
       patient_status: ["active", "inactive", "deceased", "transferred"],
       provider_role: ["physician", "nurse", "pa", "np", "admin", "tech"],
       risk_level: ["low", "medium", "high", "critical"],
+      subscription_status: ["active", "suspended", "cancelled", "trial"],
+      user_role: ["super_admin", "physician", "administrator"],
     },
   },
 } as const
