@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
@@ -21,7 +22,10 @@ import {
   User,
   Filter,
   SortAsc,
-  MoreHorizontal
+  MoreHorizontal,
+  Activity,
+  TrendingUp,
+  Heart
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -30,6 +34,9 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { BiomarkerTrendsChart } from '@/components/charts/BiomarkerTrendsChart';
+import { WearableDataChart } from '@/components/charts/WearableDataChart';
+import { PredictiveRiskAnalysis } from '@/components/analysis/PredictiveRiskAnalysis';
 
 interface Patient {
   id: string;
@@ -216,7 +223,7 @@ export function EnhancedPatientDashboard() {
         <div>
           <h1 className="text-3xl font-bold">Patient Dashboard</h1>
           <p className="text-muted-foreground">
-            Manage your patients with advanced search and filtering
+            Enhanced patient management with biomarker tracking and predictive analytics
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -226,6 +233,17 @@ export function EnhancedPatientDashboard() {
           </Button>
         </div>
       </div>
+
+      {/* Main Tabs */}
+      <Tabs defaultValue="overview" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="biomarkers">Biomarkers</TabsTrigger>
+          <TabsTrigger value="wearables">Wearable Data</TabsTrigger>
+          <TabsTrigger value="analytics">Risk Analytics</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="overview" className="space-y-6">
 
       {/* Search and Filters */}
       <Card>
@@ -462,21 +480,42 @@ export function EnhancedPatientDashboard() {
                     </div>
                   </div>
                 </Card>
-              ))}
-              
-              {filteredPatients.length === 0 && (
-                <div className="text-center py-12">
-                  <User className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">No patients found</h3>
-                  <p className="text-muted-foreground">
-                    Try adjusting your search or filter criteria
-                  </p>
-                </div>
-              )}
-            </div>
-          </ScrollArea>
-        </CardContent>
-      </Card>
-    </div>
+            ))}
+            
+            {filteredPatients.length === 0 && (
+              <div className="text-center py-12">
+                <User className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                <h3 className="text-lg font-semibold mb-2">No patients found</h3>
+                <p className="text-muted-foreground">
+                  Try adjusting your search or filter criteria
+                </p>
+              </div>
+            )}
+          </div>
+        </ScrollArea>
+      </CardContent>
+    </Card>
+    </TabsContent>
+
+    <TabsContent value="biomarkers" className="space-y-6">
+      <BiomarkerTrendsChart 
+        patientName={selectedPatient ? `${selectedPatient.first_name} ${selectedPatient.last_name}` : "Emily Rodriguez"}
+      />
+    </TabsContent>
+
+    <TabsContent value="wearables" className="space-y-6">
+      <WearableDataChart 
+        patientName={selectedPatient ? `${selectedPatient.first_name} ${selectedPatient.last_name}` : "Emily Rodriguez"}
+      />
+    </TabsContent>
+
+    <TabsContent value="analytics" className="space-y-6">
+      <PredictiveRiskAnalysis 
+        patientName={selectedPatient ? `${selectedPatient.first_name} ${selectedPatient.last_name}` : "Emily Rodriguez"}
+        overallRiskScore={selectedPatient?.risk_score || 72}
+      />
+    </TabsContent>
+  </Tabs>
+  </div>
   );
 }

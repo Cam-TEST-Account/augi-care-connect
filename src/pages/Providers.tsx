@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { NPISearch } from '@/components/providers/NPISearch';
+import { EnhancedNPISearch } from '@/components/providers/EnhancedNPISearch';
 import { useToast } from '@/hooks/use-toast';
 import { 
   Search, 
@@ -263,7 +263,7 @@ const Providers = () => {
           </TabsContent>
           
           <TabsContent value="npi-directory" className="space-y-4">
-            <NPISearch />
+            <EnhancedNPISearch />
           </TabsContent>
 
           <TabsContent value="insurance-plans" className="space-y-4">
