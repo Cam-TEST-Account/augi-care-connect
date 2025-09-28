@@ -203,4 +203,12 @@ All colors MUST be HSL.
            before:bg-gradient-to-br before:from-white/10 before:to-transparent
            before:pointer-events-none;
   }
+  
+  /* Enhanced search bar with high contrast */
+  .enhanced-search-input {
+    @apply bg-white/90 backdrop-blur-xl border-2 border-primary/20 
+           shadow-[var(--shadow-button)] hover:shadow-[var(--shadow-button-hover)]
+           hover:border-primary/30 focus:border-primary/50 focus:shadow-[var(--shadow-button-hover)]
+           transition-all duration-200 rounded-lg;
+  }
 }

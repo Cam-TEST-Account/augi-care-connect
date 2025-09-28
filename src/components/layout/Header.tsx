@@ -40,32 +40,31 @@ export const Header: React.FC = () => {
 
   return (
     <header className="floating-panel border-b-0 backdrop-blur-2xl sticky top-0 z-50 h-16 px-6 flex items-center justify-between animate-slide-up">
-      {/* Search */}
+      {/* Enhanced Search with Quick Actions */}
       <div className="flex-1 max-w-md">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground z-10" />
           <Input 
             placeholder="Search patients, records, providers..." 
-            className="pl-10 secondary-button border-0 backdrop-blur-xl"
+            className="pl-10 pr-32 enhanced-search-input"
+            onClick={() => setOpen(true)}
+            readOnly
           />
+          <Button 
+            variant="ghost" 
+            size="sm"
+            onClick={() => setOpen(true)}
+            className="absolute right-1 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors h-8 px-3"
+          >
+            <Command className="h-3 w-3 mr-1" />
+            <kbd className="pointer-events-none inline-flex h-4 select-none items-center gap-1 rounded border bg-muted px-1 font-mono text-[10px] font-medium text-muted-foreground">
+              ⌘K
+            </kbd>
+          </Button>
         </div>
       </div>
-
       {/* Actions */}
       <div className="flex items-center space-x-4">
-        <Button 
-          variant="ghost" 
-          size="sm"
-          onClick={() => setOpen(true)}
-          className="text-muted-foreground"
-        >
-          <Command className="h-4 w-4 mr-2" />
-          <span className="hidden sm:inline">Quick Actions</span>
-          <kbd className="pointer-events-none hidden sm:inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground ml-2">
-            <span className="text-xs">⌘</span>K
-          </kbd>
-        </Button>
-        
         <Button variant="glass" size="sm">
           <Plus className="w-4 h-4 mr-2" />
           New Patient
