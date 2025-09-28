@@ -17,10 +17,10 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 210 24% 16%;
 
-    /* Jade Green Primary */
-    --primary: 159 61% 46%;
+    /* Dark Teal Primary */
+    --primary: 171 100% 11%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 159 61% 56%;
+    --primary-glow: 171 100% 20%;
     
     /* Healthcare-focused Secondary */
     --secondary: 210 40% 98%;
@@ -38,12 +38,12 @@ All colors MUST be HSL.
     --warning: 38 92% 50%;
     --warning-foreground: 0 0% 100%;
 
-    --success: 159 61% 46%;
+    --success: 171 100% 11%;
     --success-foreground: 0 0% 100%;
 
     --border: 214 32% 91%;
     --input: 214 32% 91%;
-    --ring: 159 61% 46%;
+    --ring: 171 100% 11%;
 
     /* Healthcare-specific colors */
     --medical-blue: 217 91% 60%;

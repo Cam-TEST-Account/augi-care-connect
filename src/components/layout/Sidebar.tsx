@@ -12,6 +12,7 @@ import {
   Activity,
   Video
 } from 'lucide-react';
+import augiLogo from '@/assets/augi-logo.png';
 
 const navigation = [
   { name: 'Dashboard', icon: Activity, href: '/' },
@@ -37,8 +38,8 @@ export const Sidebar: React.FC = () => {
       {/* Logo */}
       <div className="p-6 border-b border-border">
         <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
-            <Shield className="w-5 h-5 text-primary-foreground" />
+          <div className="w-8 h-8 flex items-center justify-center">
+            <img src={augiLogo} alt="Augi Logo" className="w-8 h-8 rounded-lg" />
           </div>
           <div>
             <h1 className="text-lg font-semibold text-foreground">AugiCare</h1>
