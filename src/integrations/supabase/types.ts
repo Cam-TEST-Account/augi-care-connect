@@ -1127,7 +1127,19 @@ export type Database = {
         Args: { _user_id: string }
         Returns: string
       }
+      get_user_organization_safe: {
+        Args: { _user_id: string }
+        Returns: string
+      }
       has_organization_role: {
+        Args: {
+          _organization_id: string
+          _role: Database["public"]["Enums"]["user_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      has_organization_role_safe: {
         Args: {
           _organization_id: string
           _role: Database["public"]["Enums"]["user_role"]

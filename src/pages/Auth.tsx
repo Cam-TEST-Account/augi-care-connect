@@ -7,8 +7,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Loader2, Shield, Users } from 'lucide-react';
+import { Progress } from '@/components/ui/progress';
+import { Loader2, Shield, Users, Check, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { validatePassword, getPasswordStrengthColor } from '@/utils/passwordValidation';
 import augiLogo from '@/assets/augi-logo.png';
 
 const Auth = () => {
@@ -21,8 +23,11 @@ const Auth = () => {
   const [lastName, setLastName] = useState('');
   const [npiNumber, setNpiNumber] = useState('');
   const [specialty, setSpecialty] = useState('');
+  const [showPasswordRequirements, setShowPasswordRequirements] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  
+  const passwordValidation = validatePassword(password);
 
   useEffect(() => {
     // Check if user is already logged in
@@ -73,8 +78,8 @@ const Auth = () => {
       return;
     }
 
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters');
+    if (!passwordValidation.isValid) {
+      setError('Password does not meet security requirements');
       setIsLoading(false);
       return;
     }
@@ -273,10 +278,52 @@ const Auth = () => {
                       type="password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
+                      onFocus={() => setShowPasswordRequirements(true)}
                       required
                       disabled={isLoading}
-                      minLength={6}
+                      minLength={8}
                     />
+                    
+                    {/* Password Strength Indicator */}
+                    {password && (
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between text-sm">
+                          <span>Password Strength:</span>
+                          <span className={getPasswordStrengthColor(passwordValidation.strength)}>
+                            {passwordValidation.strength.charAt(0).toUpperCase() + passwordValidation.strength.slice(1)}
+                          </span>
+                        </div>
+                        <Progress 
+                          value={passwordValidation.strength === 'weak' ? 33 : passwordValidation.strength === 'medium' ? 66 : 100}
+                          className="h-2"
+                        />
+                      </div>
+                    )}
+                    
+                    {/* Password Requirements */}
+                    {showPasswordRequirements && password && (
+                      <div className="bg-muted/50 p-3 rounded-md text-sm space-y-1">
+                        <div className="font-medium mb-2">Password Requirements:</div>
+                        {[
+                          { check: password.length >= 8, text: 'At least 8 characters' },
+                          { check: /[A-Z]/.test(password), text: 'One uppercase letter' },
+                          { check: /[a-z]/.test(password), text: 'One lowercase letter' },
+                          { check: /\d/.test(password), text: 'One number' },
+                          { check: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password), text: 'One special character' }
+                        ].map((req, index) => (
+                          <div key={index} className="flex items-center gap-2">
+                            {req.check ? (
+                              <Check className="h-3 w-3 text-green-500" />
+                            ) : (
+                              <X className="h-3 w-3 text-destructive" />
+                            )}
+                            <span className={req.check ? 'text-green-600' : 'text-muted-foreground'}>
+                              {req.text}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                   
                   <div className="space-y-2">
@@ -298,10 +345,10 @@ const Auth = () => {
                     </Alert>
                   )}
                   
-                  <Button 
+                   <Button 
                     type="submit" 
                     className="w-full" 
-                    disabled={isLoading}
+                    disabled={isLoading || !passwordValidation.isValid || password !== confirmPassword}
                   >
                     {isLoading ? (
                       <>
