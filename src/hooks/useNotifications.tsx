@@ -1,64 +1,45 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import type { Notification } from '@/components/notifications/NotificationCenter';
+import { useAuth } from '@/hooks/useAuth';
 
-export const useNotifications = () => {
+export interface Notification {
+  id: string;
+  title: string;
+  message: string;
+  type: 'info' | 'warning' | 'critical' | 'success';
+  read: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export function useNotifications() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const { toast } = useToast();
-
-  // Mock notifications for demo - replace with real data
-  const mockNotifications: Notification[] = [
-    {
-      id: '1',
-      type: 'critical',
-      title: 'Critical Lab Value Alert',
-      message: 'Patient Sarah Johnson (Test Patient) has critically high glucose levels (450 mg/dL). Immediate attention required.',
-      timestamp: new Date(Date.now() - 5 * 60 * 1000), // 5 minutes ago
-      read: false,
-      actions: [
-        { label: 'View Patient', onClick: () => console.log('View patient') },
-        { label: 'Call Patient', onClick: () => console.log('Call patient') },
-      ],
-    },
-    {
-      id: '2',
-      type: 'warning',
-      title: 'Medication Interaction Warning',
-      message: 'Potential interaction detected between Warfarin and new Aspirin prescription for John Doe (Test Patient).',
-      timestamp: new Date(Date.now() - 15 * 60 * 1000), // 15 minutes ago
-      read: false,
-      actions: [
-        { label: 'Review Meds', onClick: () => console.log('Review medications') },
-      ],
-    },
-    {
-      id: '3',
-      type: 'info',
-      title: 'Patient Risk Score Change',
-      message: 'Maria Garcia (Test Patient)\'s risk score increased from Low to Medium based on new wearable data.',
-      timestamp: new Date(Date.now() - 30 * 60 * 1000), // 30 minutes ago
-      read: false,
-      actions: [
-        { label: 'View Trends', onClick: () => console.log('View trends') },
-      ],
-    },
-    {
-      id: '4',
-      type: 'success',
-      title: 'Appointment Confirmed',
-      message: 'Michael Chen (Test Patient) confirmed his appointment for tomorrow at 2:00 PM.',
-      timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
-      read: true,
-    },
-  ];
+  const { user } = useAuth();
 
   useEffect(() => {
-    setNotifications(mockNotifications);
-  }, []);
+    if (!user) return;
 
-  // Real-time subscription for critical alerts
-  useEffect(() => {
+    // Fetch existing notifications
+    const fetchNotifications = async () => {
+      const { data, error } = await supabase
+        .from('notifications')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Error fetching notifications:', error);
+        return;
+      }
+
+      setNotifications((data as Notification[]) || []);
+    };
+
+    fetchNotifications();
+
+    // Subscribe to real-time notifications
     const channel = supabase
       .channel('notifications')
       .on(
@@ -66,27 +47,61 @@ export const useNotifications = () => {
         {
           event: 'INSERT',
           schema: 'public',
-          table: 'lab_results',
+          table: 'notifications',
+          filter: `user_id=eq.${user.id}`
         },
         (payload) => {
-          // Check for critical values
-          const labResult = payload.new as any;
+          const newNotification = payload.new as Notification;
+          setNotifications(prev => [newNotification, ...prev]);
+          
+          // Show toast for new notifications
+          toast({
+            title: newNotification.title,
+            description: newNotification.message,
+            variant: newNotification.type === 'critical' ? 'destructive' : 'default',
+          });
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'notifications',
+          filter: `user_id=eq.${user.id}`
+        },
+        (payload) => {
+          const updatedNotification = payload.new as Notification;
+          setNotifications(prev => 
+            prev.map(notification => 
+              notification.id === updatedNotification.id 
+                ? updatedNotification 
+                : notification
+            )
+          );
+        }
+      )
+      .subscribe();
+
+    // Listen for critical lab results to create notifications
+    const labChannel = supabase
+      .channel('lab_results')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'lab_results'
+        },
+        async (payload) => {
+          const labResult = payload.new;
+          
           if (labResult.abnormal_flag) {
-            const notification: Notification = {
-              id: `lab-${labResult.id}`,
-              type: 'critical',
-              title: 'Critical Lab Value Alert',
-              message: `${labResult.test_name}: ${labResult.result_value} ${labResult.unit}`,
-              timestamp: new Date(),
-              read: false,
-            };
-            
-            setNotifications(prev => [notification, ...prev]);
-            
-            toast({
-              title: 'Critical Lab Alert',
-              description: notification.message,
-              variant: 'destructive',
+            // Create a notification for abnormal lab results
+            await createNotification({
+              title: 'Critical Lab Result',
+              message: `Abnormal ${labResult.test_name} result for patient requires attention`,
+              type: 'critical'
             });
           }
         }
@@ -95,51 +110,96 @@ export const useNotifications = () => {
 
     return () => {
       supabase.removeChannel(channel);
+      supabase.removeChannel(labChannel);
     };
-  }, [toast]);
+  }, [user, toast]);
 
-  const markAsRead = useCallback((id: string) => {
+  const markAsRead = async (id: string) => {
+    if (!user) return;
+
+    const { error } = await supabase
+      .from('notifications')
+      .update({ read: true, updated_at: new Date().toISOString() })
+      .eq('id', id)
+      .eq('user_id', user.id);
+
+    if (error) {
+      console.error('Error marking notification as read:', error);
+      return;
+    }
+
     setNotifications(prev =>
       prev.map(notification =>
-        notification.id === id ? { ...notification, read: true } : notification
+        notification.id === id
+          ? { ...notification, read: true }
+          : notification
       )
     );
-  }, []);
+  };
 
-  const dismiss = useCallback((id: string) => {
+  const dismiss = async (id: string) => {
+    if (!user) return;
+
+    const { error } = await supabase
+      .from('notifications')
+      .delete()
+      .eq('id', id)
+      .eq('user_id', user.id);
+
+    if (error) {
+      console.error('Error dismissing notification:', error);
+      return;
+    }
+
     setNotifications(prev => prev.filter(notification => notification.id !== id));
-  }, []);
+  };
 
-  const markAllAsRead = useCallback(() => {
+  const markAllAsRead = async () => {
+    if (!user) return;
+
+    const unreadIds = notifications.filter(n => !n.read).map(n => n.id);
+    
+    if (unreadIds.length === 0) return;
+
+    const { error } = await supabase
+      .from('notifications')
+      .update({ read: true, updated_at: new Date().toISOString() })
+      .in('id', unreadIds)
+      .eq('user_id', user.id);
+
+    if (error) {
+      console.error('Error marking all notifications as read:', error);
+      return;
+    }
+
     setNotifications(prev =>
       prev.map(notification => ({ ...notification, read: true }))
     );
-  }, []);
+  };
 
-  const addNotification = useCallback((notification: Omit<Notification, 'id' | 'timestamp'>) => {
-    const newNotification: Notification = {
-      ...notification,
-      id: Date.now().toString(),
-      timestamp: new Date(),
-    };
-    
-    setNotifications(prev => [newNotification, ...prev]);
-    
-    // Show toast for critical notifications
-    if (notification.type === 'critical') {
-      toast({
+  const createNotification = async (notification: Omit<Notification, 'id' | 'created_at' | 'updated_at' | 'read'>) => {
+    if (!user) return;
+
+    const { error } = await supabase
+      .from('notifications')
+      .insert({
+        user_id: user.id,
         title: notification.title,
-        description: notification.message,
-        variant: 'destructive',
+        message: notification.message,
+        type: notification.type
       });
+
+    if (error) {
+      console.error('Error creating notification:', error);
+      return;
     }
-  }, [toast]);
+  };
 
   return {
     notifications,
     markAsRead,
     dismiss,
     markAllAsRead,
-    addNotification,
+    createNotification
   };
-};
+}

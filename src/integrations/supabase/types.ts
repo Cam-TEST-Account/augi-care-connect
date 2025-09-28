@@ -396,6 +396,50 @@ export type Database = {
           },
         ]
       }
+      notifications: {
+        Row: {
+          created_at: string
+          id: string
+          message: string
+          organization_id: string | null
+          read: boolean | null
+          title: string
+          type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message: string
+          organization_id?: string | null
+          read?: boolean | null
+          title: string
+          type: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message?: string
+          organization_id?: string | null
+          read?: boolean | null
+          title?: string
+          type?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       organizations: {
         Row: {
           account_type: Database["public"]["Enums"]["account_type"]
@@ -655,9 +699,12 @@ export type Database = {
           license_number: string | null
           license_state: string | null
           npi_number: string | null
+          onboarding_completed: boolean | null
           organization_id: string | null
           organization_name: string | null
           phone: string | null
+          professional_email: string | null
+          professional_phone: string | null
           role: Database["public"]["Enums"]["provider_role"]
           specialty: string | null
           updated_at: string | null
@@ -674,9 +721,12 @@ export type Database = {
           license_number?: string | null
           license_state?: string | null
           npi_number?: string | null
+          onboarding_completed?: boolean | null
           organization_id?: string | null
           organization_name?: string | null
           phone?: string | null
+          professional_email?: string | null
+          professional_phone?: string | null
           role?: Database["public"]["Enums"]["provider_role"]
           specialty?: string | null
           updated_at?: string | null
@@ -693,9 +743,12 @@ export type Database = {
           license_number?: string | null
           license_state?: string | null
           npi_number?: string | null
+          onboarding_completed?: boolean | null
           organization_id?: string | null
           organization_name?: string | null
           phone?: string | null
+          professional_email?: string | null
+          professional_phone?: string | null
           role?: Database["public"]["Enums"]["provider_role"]
           specialty?: string | null
           updated_at?: string | null

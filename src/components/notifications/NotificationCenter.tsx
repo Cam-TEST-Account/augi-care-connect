@@ -16,7 +16,7 @@ export interface Notification {
   type: 'critical' | 'warning' | 'info' | 'success';
   title: string;
   message: string;
-  timestamp: Date;
+  created_at: string;
   read: boolean;
   actions?: Array<{
     label: string;
@@ -55,8 +55,9 @@ const NotificationCenter: React.FC<NotificationCenterProps> = ({
     }
   };
 
-  const formatTime = (timestamp: Date) => {
+  const formatTime = (createdAt: string) => {
     const now = new Date();
+    const timestamp = new Date(createdAt);
     const diff = now.getTime() - timestamp.getTime();
     const minutes = Math.floor(diff / 60000);
     const hours = Math.floor(diff / 3600000);
@@ -146,7 +147,7 @@ const NotificationCenter: React.FC<NotificationCenterProps> = ({
                             <div className="flex items-center gap-1 mt-1">
                               <Clock className="h-3 w-3 text-muted-foreground" />
                               <span className="text-xs text-muted-foreground">
-                                {formatTime(notification.timestamp)}
+                                {formatTime(notification.created_at)}
                               </span>
                             </div>
                             {notification.actions && (
