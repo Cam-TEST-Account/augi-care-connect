@@ -431,7 +431,7 @@ const Security = () => {
               <Card>
                 <CardContent className="p-6 text-center">
                   <Clock className="w-8 h-8 text-primary mx-auto mb-2" />
-                  <p className="text-2xl font-bold text-foreground">< 5 min</p>
+                  <p className="text-2xl font-bold text-foreground">Under 5 min</p>
                   <p className="text-sm text-muted-foreground">Alert Response</p>
                 </CardContent>
               </Card>

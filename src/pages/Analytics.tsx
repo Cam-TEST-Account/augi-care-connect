@@ -106,7 +106,7 @@ const Analytics = () => {
                         <h4 className="font-medium text-foreground">High Risk Patients</h4>
                         <span className="text-2xl font-bold text-destructive">23</span>
                       </div>
-                      <p className="text-sm text-muted-foreground">Patients with >80% risk score for hospitalization in next 30 days</p>
+                      <p className="text-sm text-muted-foreground">Patients with over 80% risk score for hospitalization in next 30 days</p>
                     </div>
                     <div className="p-4 bg-warning/5 border border-warning/20 rounded-lg">
                       <div className="flex items-center justify-between mb-2">
