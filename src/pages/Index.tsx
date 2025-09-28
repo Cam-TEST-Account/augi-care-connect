@@ -15,17 +15,18 @@ const Index = () => {
   return (
     <DashboardLayout>
       <div className="space-y-8 animate-fade-in">
-        {/* Welcome Header with Subtle Shadow Gradient */}
-        <div className="relative p-8 rounded-2xl bg-white/80 backdrop-blur-xl border border-white/30 overflow-hidden"
+        {/* Welcome Header with Subtle Accent */}
+        <div className="relative p-8 rounded-2xl bg-white/95 backdrop-blur-xl border border-gray-200/50 overflow-hidden"
              style={{ 
                boxShadow: `
-                 0 20px 40px -12px hsla(var(--primary), 0.15),
-                 0 8px 32px -8px hsla(var(--primary), 0.1),
-                 inset 0 1px 0 hsla(255, 255, 255, 0.1)
+                 0 4px 20px -4px hsla(var(--primary), 0.08),
+                 0 2px 10px -2px hsla(var(--primary), 0.05),
+                 inset 0 1px 0 hsla(255, 255, 255, 0.8)
                `
              }}>
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary-glow/5 pointer-events-none"></div>
-          <div className="relative z-10">
+          <div className="absolute inset-0 bg-gradient-to-br from-gray-50/80 via-white/40 to-gray-100/60 pointer-events-none"></div>
+          <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary via-primary-glow to-primary rounded-r-full"></div>
+          <div className="relative z-10 ml-4">
             <h1 className="text-4xl font-bold text-foreground mb-2">Provider Dashboard</h1>
             <p className="text-muted-foreground text-lg">{getGreetingMessage(user)}</p>
           </div>
