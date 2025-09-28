@@ -34,7 +34,8 @@ export const Sidebar: React.FC = () => {
   const location = useLocation();
   
   return (
-    <div className="w-64 bg-card shadow-medium border-r border-border flex flex-col">
+    <div className="floating-panel border-r-0 w-64 flex flex-col animate-slide-up"
+         style={{ background: 'var(--gradient-glass)' }}>
       {/* Logo */}
       <div className="p-6 border-b border-border">
         <div className="flex items-center space-x-3">
@@ -53,8 +54,8 @@ export const Sidebar: React.FC = () => {
         {navigation.map((item) => (
           <Button
             key={item.name}
-            variant={location.pathname === item.href ? "default" : "ghost"}
-            className="w-full justify-start"
+            variant={location.pathname === item.href ? "default" : "glass"}
+            className="w-full justify-start transition-all duration-200 hover:scale-[1.02]"
             asChild
           >
             <Link to={item.href}>
@@ -70,8 +71,8 @@ export const Sidebar: React.FC = () => {
         {bottomNavigation.map((item) => (
           <Button
             key={item.name}
-            variant={location.pathname === item.href ? "default" : "ghost"}
-            className="w-full justify-start"
+            variant={location.pathname === item.href ? "default" : "glass"}
+            className="w-full justify-start transition-all duration-200 hover:scale-[1.02]"
             asChild
           >
             <Link to={item.href}>

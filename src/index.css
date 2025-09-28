@@ -48,17 +48,41 @@ All colors MUST be HSL.
     --medical-teal: 172 66% 50%;
     --clinical-gray: 210 9% 31%;
     
-    /* Gradients */
+    /* Apple-style glass morphism and depth */
+    --glass-background: hsla(var(--background), 0.8);
+    --glass-border: hsla(var(--border), 0.2);
+    --glass-blur: blur(20px);
+    
+    /* Enhanced gradients with depth */
     --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
     --gradient-subtle: linear-gradient(180deg, hsl(var(--background)), hsl(var(--accent)));
     --gradient-card: linear-gradient(145deg, hsl(var(--card)), hsl(var(--accent) / 0.3));
+    --gradient-glass: linear-gradient(145deg, hsla(var(--background), 0.9), hsla(var(--accent), 0.4));
+    --gradient-button: linear-gradient(145deg, hsl(var(--primary)), hsl(var(--primary-glow)));
+    --gradient-button-hover: linear-gradient(145deg, hsl(var(--primary-glow)), hsl(var(--primary)));
     
-    /* Professional shadows */
+    /* Apple-style shadows with depth */
+    --shadow-glass: 
+      0 8px 32px -12px hsla(var(--primary), 0.3),
+      0 0 0 1px hsla(var(--border), 0.05),
+      inset 0 1px 0 hsla(255, 255, 255, 0.1);
+    --shadow-button: 
+      0 4px 16px -4px hsla(var(--primary), 0.4),
+      0 2px 8px -2px hsla(var(--primary), 0.2),
+      inset 0 1px 0 hsla(255, 255, 255, 0.1);
+    --shadow-button-hover: 
+      0 8px 24px -6px hsla(var(--primary), 0.5),
+      0 4px 12px -3px hsla(var(--primary), 0.3),
+      inset 0 1px 0 hsla(255, 255, 255, 0.15);
+    --shadow-card: 
+      0 6px 24px -6px hsla(var(--primary), 0.15),
+      0 2px 12px -2px hsla(var(--primary), 0.1),
+      0 0 0 1px hsla(var(--border), 0.05);
     --shadow-soft: 0 2px 8px -2px hsl(var(--primary) / 0.1);
     --shadow-medium: 0 4px 16px -4px hsl(var(--primary) / 0.15);
     --shadow-strong: 0 8px 32px -8px hsl(var(--primary) / 0.2);
 
-    --radius: 0.5rem;
+    --radius: 12px;
 
     --sidebar-background: 0 0% 98%;
 
@@ -131,5 +155,52 @@ All colors MUST be HSL.
   
   .emphasis, .highlight {
     @apply font-heading;
+  }
+}
+
+@layer components {
+  /* Apple-style glass morphism components */
+  .glass-card {
+    @apply backdrop-blur-xl bg-white/80 border border-white/20 shadow-[var(--shadow-glass)] rounded-[var(--radius)];
+  }
+  
+  .glass-button {
+    @apply backdrop-blur-xl bg-white/10 border border-white/20 shadow-[var(--shadow-button)] 
+           hover:shadow-[var(--shadow-button-hover)] hover:bg-white/20 
+           transition-all duration-200 rounded-[var(--radius)];
+  }
+  
+  .depth-card {
+    @apply bg-gradient-to-br from-white to-accent/30 shadow-[var(--shadow-card)] 
+           border border-white/20 rounded-[var(--radius)] relative
+           before:absolute before:inset-0 before:rounded-[var(--radius)] 
+           before:bg-gradient-to-br before:from-white/5 before:to-transparent 
+           before:pointer-events-none;
+  }
+  
+  .primary-button {
+    @apply bg-gradient-to-br from-primary to-primary-glow shadow-[var(--shadow-button)]
+           hover:shadow-[var(--shadow-button-hover)] hover:scale-[1.02] 
+           active:scale-[0.98] transition-all duration-200 
+           text-primary-foreground font-medium rounded-[var(--radius)]
+           relative overflow-hidden
+           before:absolute before:inset-0 before:bg-gradient-to-br 
+           before:from-white/20 before:to-transparent before:opacity-0 
+           hover:before:opacity-100 before:transition-opacity before:duration-200;
+  }
+  
+  .secondary-button {
+    @apply bg-white/80 backdrop-blur-xl border border-white/30 shadow-[var(--shadow-button)]
+           hover:shadow-[var(--shadow-button-hover)] hover:bg-white/90 hover:scale-[1.02]
+           active:scale-[0.98] transition-all duration-200
+           text-foreground font-medium rounded-[var(--radius)];
+  }
+  
+  .floating-panel {
+    @apply backdrop-blur-2xl bg-white/70 border border-white/20 
+           shadow-[var(--shadow-glass)] rounded-[var(--radius)]
+           relative before:absolute before:inset-0 before:rounded-[var(--radius)]
+           before:bg-gradient-to-br before:from-white/10 before:to-transparent
+           before:pointer-events-none;
   }
 }

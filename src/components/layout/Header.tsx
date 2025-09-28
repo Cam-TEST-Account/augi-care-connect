@@ -39,14 +39,14 @@ export const Header: React.FC = () => {
   const userInfo = getUserDisplayInfo(user);
 
   return (
-    <header className="h-16 border-b border-border bg-card shadow-soft px-6 flex items-center justify-between">
+    <header className="floating-panel border-b-0 backdrop-blur-2xl sticky top-0 z-50 h-16 px-6 flex items-center justify-between animate-slide-up">
       {/* Search */}
       <div className="flex-1 max-w-md">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input 
             placeholder="Search patients, records, providers..." 
-            className="pl-10"
+            className="pl-10 secondary-button border-0 backdrop-blur-xl"
           />
         </div>
       </div>
@@ -66,7 +66,7 @@ export const Header: React.FC = () => {
           </kbd>
         </Button>
         
-        <Button variant="outline" size="sm">
+        <Button variant="glass" size="sm">
           <Plus className="w-4 h-4 mr-2" />
           New Patient
         </Button>
@@ -92,7 +92,7 @@ export const Header: React.FC = () => {
               <ChevronDown className="w-4 h-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
+          <DropdownMenuContent className="floating-panel border-0 mt-2" align="end">
             <div className="px-2 py-1.5 text-sm text-muted-foreground">
               {user?.email}
             </div>
