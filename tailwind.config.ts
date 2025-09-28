@@ -13,6 +13,13 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        'heading': ['Playfair Display', 'serif'], // Alternative to Warbler Text
+        'body': ['Inter', 'system-ui', 'sans-serif'], // Alternative to Aktiv Grotesk
+      },
+      letterSpacing: {
+        'body': '0.01em', // 1% letter spacing for body text
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
