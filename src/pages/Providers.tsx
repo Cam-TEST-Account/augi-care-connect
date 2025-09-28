@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { NPISearch } from '@/components/providers/NPISearch';
 import { 
   Search, 
   MapPin, 
@@ -214,30 +215,7 @@ const Providers = () => {
           </TabsContent>
           
           <TabsContent value="npi-directory" className="space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Award className="w-5 h-5 mr-2 text-primary" />
-                  NPI Registry Integration
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="p-4 bg-primary/5 rounded-lg">
-                    <h4 className="font-medium text-foreground mb-2">Real-time NPI Lookup</h4>
-                    <p className="text-sm text-muted-foreground">Integrated with NPPES NPI Registry for real-time provider verification and credential validation.</p>
-                  </div>
-                  <div className="p-4 bg-primary/5 rounded-lg">
-                    <h4 className="font-medium text-foreground mb-2">Provider Credentials</h4>
-                    <p className="text-sm text-muted-foreground">Access to board certifications, specialties, practice locations, and contact information.</p>
-                  </div>
-                  <div className="p-4 bg-primary/5 rounded-lg">
-                    <h4 className="font-medium text-foreground mb-2">Network Status Verification</h4>
-                    <p className="text-sm text-muted-foreground">Real-time verification of provider network participation across insurance plans.</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <NPISearch />
           </TabsContent>
 
           <TabsContent value="insurance-plans" className="space-y-4">

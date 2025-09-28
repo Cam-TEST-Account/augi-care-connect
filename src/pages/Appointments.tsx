@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { AppointmentCalendar } from '@/components/appointments/AppointmentCalendar';
 import { 
   Calendar, 
   Clock, 
@@ -14,7 +15,8 @@ import {
   Plus,
   Filter,
   Users,
-  AlertCircle
+  AlertCircle,
+  CalendarDays
 } from 'lucide-react';
 
 const appointments = [
@@ -116,6 +118,7 @@ const AppointmentCard = ({ appointment }: { appointment: typeof appointments[0] 
 };
 
 const Appointments = () => {
+  const [showCalendar, setShowCalendar] = useState(false);
   return (
     <DashboardLayout>
       <div className="space-y-6">
@@ -124,10 +127,16 @@ const Appointments = () => {
             <h1 className="text-3xl font-bold text-foreground">Appointments</h1>
             <p className="text-muted-foreground">Manage your schedule across all care modalities</p>
           </div>
-          <Button>
-            <Plus className="w-4 h-4 mr-2" />
-            Schedule Appointment
-          </Button>
+          <div className="flex space-x-2">
+            <Button variant="outline" onClick={() => setShowCalendar(true)}>
+              <CalendarDays className="w-4 h-4 mr-2" />
+              Full Calendar
+            </Button>
+            <Button>
+              <Plus className="w-4 h-4 mr-2" />
+              Schedule Appointment
+            </Button>
+          </div>
         </div>
 
         {/* Quick Stats */}
@@ -231,13 +240,23 @@ const Appointments = () => {
           <TabsContent value="calendar" className="space-y-4">
             <Card>
               <CardContent className="p-6 text-center">
-                <Calendar className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-foreground mb-2">Calendar Integration</h3>
-                <p className="text-muted-foreground">Full calendar view with drag-and-drop scheduling coming soon</p>
+                <CalendarDays className="w-12 h-12 text-primary mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-foreground mb-2">Calendar View</h3>
+                <p className="text-muted-foreground mb-4">View all your appointments in a full calendar layout</p>
+                <Button onClick={() => setShowCalendar(true)}>
+                  <Calendar className="w-4 h-4 mr-2" />
+                  Open Full Calendar
+                </Button>
               </CardContent>
             </Card>
           </TabsContent>
         </Tabs>
+
+        {/* Calendar Dialog */}
+        <AppointmentCalendar 
+          open={showCalendar}
+          onOpenChange={setShowCalendar}
+        />
       </div>
     </DashboardLayout>
   );
