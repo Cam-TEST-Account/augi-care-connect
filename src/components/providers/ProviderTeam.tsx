@@ -82,11 +82,11 @@ export const ProviderTeam: React.FC = () => {
                       <AvatarImage src={member.avatar} />
                       <AvatarFallback>{member.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                     </Avatar>
-                    <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-primary rounded-full flex items-center justify-center border-2 border-white">
+                    <div className="absolute -top-1 -right-1 w-5 h-5 bg-primary rounded-full flex items-center justify-center border-2 border-background">
                       {member.id === 1 ? (
-                        <img src={augiLogo} alt="Augi" className="w-3 h-3" />
+                        <img src={augiLogo} alt="Augi" className="w-2.5 h-2.5" />
                       ) : (
-                        <member.icon className="w-3 h-3 text-primary-foreground" />
+                        <member.icon className="w-2.5 h-2.5 text-primary-foreground" />
                       )}
                     </div>
                   </div>
