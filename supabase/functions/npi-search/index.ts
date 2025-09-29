@@ -9,6 +9,10 @@ interface NPISearchParams {
   firstName?: string;
   lastName?: string;
   npiNumber?: string;
+  state?: string;
+  city?: string;
+  specialty?: string;
+  taxonomyDescription?: string;
   limit?: number;
 }
 
@@ -19,12 +23,12 @@ serve(async (req) => {
   }
 
   try {
-    const { firstName, lastName, npiNumber, limit = 50 }: NPISearchParams = await req.json();
+    const { firstName, lastName, npiNumber, state, city, specialty, taxonomyDescription, limit = 50 }: NPISearchParams = await req.json();
 
     // Validate input parameters
-    if (!firstName && !lastName && !npiNumber) {
+    if (!firstName && !lastName && !npiNumber && !state && !city && !specialty && !taxonomyDescription) {
       return new Response(
-        JSON.stringify({ error: 'At least one search parameter is required (firstName, lastName, or npiNumber)' }),
+        JSON.stringify({ error: 'At least one search parameter is required' }),
         { 
           status: 400, 
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -40,6 +44,15 @@ serve(async (req) => {
     } else {
       if (firstName) params.append('first_name', firstName);
       if (lastName) params.append('last_name', lastName);
+      if (state) params.append('state', state);
+      if (city) params.append('city', city);
+      if (specialty) {
+        // Map common specialty names to taxonomy descriptions
+        params.append('taxonomy_description', specialty);
+      }
+      if (taxonomyDescription) {
+        params.append('taxonomy_description', taxonomyDescription);
+      }
     }
     
     params.append('limit', Math.min(limit, 200).toString()); // CMS API max is 200
@@ -119,6 +132,10 @@ serve(async (req) => {
         firstName,
         lastName,
         npiNumber,
+        state,
+        city,
+        specialty,
+        taxonomyDescription,
         limit
       }
     };

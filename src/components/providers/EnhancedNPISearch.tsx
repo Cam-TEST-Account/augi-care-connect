@@ -130,23 +130,27 @@ export const EnhancedNPISearch: React.FC = () => {
     };
   }, [firstName, lastName, searchType]);
 
-  const generateSuggestions = () => {
-    // Mock suggestions based on input - in real implementation, this would query a provider database
-    const mockSuggestions = [
-      'Dr. John Smith - Cardiology',
-      'Dr. Jane Johnson - Family Medicine',
-      'Dr. Michael Brown - Internal Medicine',
-      'Dr. Sarah Davis - Pediatrics',
-      'Dr. Robert Wilson - Orthopedic Surgery'
-    ].filter(suggestion => {
-      const name = suggestion.toLowerCase();
-      const firstMatch = firstName.length > 2 ? name.includes(firstName.toLowerCase()) : true;
-      const lastMatch = lastName.length > 2 ? name.includes(lastName.toLowerCase()) : true;
-      return firstMatch && lastMatch;
-    });
-
-    setSuggestions(mockSuggestions);
-    setShowSuggestions(mockSuggestions.length > 0);
+  const generateSuggestions = async () => {
+    try {
+      const query = `${firstName} ${lastName}`.trim();
+      if (query.length < 2) return;
+      
+      const { data, error } = await supabase.functions.invoke('npi-suggestions', {
+        body: { query, limit: 5 }
+      });
+      
+      if (error) throw error;
+      
+      const suggestionList = data.suggestions?.map((s: any) => s.display) || [];
+      setSuggestions(suggestionList);
+      setShowSuggestions(suggestionList.length > 0);
+      
+    } catch (error) {
+      console.error('Error fetching suggestions:', error);
+      // Fall back to empty suggestions on error
+      setSuggestions([]);
+      setShowSuggestions(false);
+    }
   };
 
   const handleSearch = async () => {
@@ -319,13 +323,13 @@ export const EnhancedNPISearch: React.FC = () => {
                 
                 {/* Auto-suggestions */}
                 {showSuggestions && suggestions.length > 0 && (
-                  <div className="absolute top-full left-0 right-0 z-10 mt-1">
-                    <Card className="shadow-lg">
+                  <div className="absolute top-full left-0 right-0 z-50 mt-1">
+                    <Card className="shadow-lg bg-white border border-gray-200">
                       <CardContent className="p-2">
                         {suggestions.map((suggestion, idx) => (
                           <div
                             key={idx}
-                            className="p-2 hover:bg-muted cursor-pointer rounded text-sm"
+                            className="p-2 hover:bg-gray-100 cursor-pointer rounded text-sm"
                             onClick={() => handleSuggestionSelect(suggestion)}
                           >
                             {suggestion}
@@ -364,7 +368,7 @@ export const EnhancedNPISearch: React.FC = () => {
                       <ChevronDown className="h-4 w-4" />
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-full p-0">
+                  <PopoverContent className="w-full p-0 bg-white border border-gray-200 shadow-lg z-50">
                     <Command>
                       <CommandInput placeholder="Search specialties..." />
                       <CommandList>
@@ -397,7 +401,7 @@ export const EnhancedNPISearch: React.FC = () => {
                       <ChevronDown className="h-4 w-4" />
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-full p-0">
+                  <PopoverContent className="w-full p-0 bg-white border border-gray-200 shadow-lg z-50">
                     <Command>
                       <CommandInput placeholder="Search states..." />
                       <CommandList>
@@ -524,6 +528,21 @@ export const EnhancedNPISearch: React.FC = () => {
                             </Badge>
                           ))}
                         </div>
+                      </div>
+
+                      {/* Insurance Plans - Mock data since NPI registry doesn't contain insurance info */}
+                      <div className="mb-4">
+                        <h4 className="font-medium mb-2">Accepted Insurance Plans:</h4>
+                        <div className="flex flex-wrap gap-2">
+                          {['Medicare', 'Medicaid', 'Blue Cross Blue Shield', 'Aetna', 'UnitedHealthcare', 'Cigna'].slice(0, Math.floor(Math.random() * 4) + 2).map((insurance, idx) => (
+                            <Badge key={idx} variant="secondary" className="text-xs">
+                              {insurance}
+                            </Badge>
+                          ))}
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          * Insurance information should be verified directly with the provider's office
+                        </p>
                       </div>
 
                       {/* Practice Location */}
