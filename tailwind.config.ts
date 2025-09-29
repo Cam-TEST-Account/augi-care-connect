@@ -68,6 +68,9 @@ export default {
           teal: "hsl(var(--medical-teal))",
           gray: "hsl(var(--clinical-gray))",
         },
+        provider: {
+          green: "hsl(var(--provider-green))",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",

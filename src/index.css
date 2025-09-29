@@ -48,6 +48,9 @@ All colors MUST be HSL.
     --medical-teal: 172 66% 50%;
     --clinical-gray: 210 9% 31%;
     
+    /* Provider dashboard green */
+    --provider-green: 150 72% 37%;
+    
     /* Apple-style glass morphism and depth */
     --glass-background: hsla(var(--background), 0.8);
     --glass-border: hsla(var(--border), 0.2);
