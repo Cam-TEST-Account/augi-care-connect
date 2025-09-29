@@ -78,11 +78,11 @@ export const ProviderTeam: React.FC = () => {
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
                   <div className="relative">
-                    <Avatar>
+                    <Avatar className="w-10 h-10">
                       <AvatarImage src={member.avatar} />
                       <AvatarFallback>{member.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                     </Avatar>
-                    <div className="absolute -bottom-1 -right-1 p-1 bg-primary rounded-full">
+                    <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-primary rounded-full flex items-center justify-center border-2 border-white">
                       {member.id === 1 ? (
                         <img src={augiLogo} alt="Augi" className="w-3 h-3" />
                       ) : (
@@ -100,11 +100,11 @@ export const ProviderTeam: React.FC = () => {
                   </div>
                 </div>
                 
-                <div className="flex space-x-2">
-                  <Button variant="outline" size="sm" disabled={member.status === 'offline'}>
+                <div className="flex items-center space-x-2">
+                  <Button variant="outline" size="sm" disabled={member.status === 'offline'} className="h-8 w-8 p-0 flex items-center justify-center">
                     <MessageSquare className="w-4 h-4" />
                   </Button>
-                  <Button variant="outline" size="sm">
+                  <Button variant="outline" size="sm" className="h-8 w-8 p-0 flex items-center justify-center">
                     <Calendar className="w-4 h-4" />
                   </Button>
                 </div>
@@ -114,11 +114,13 @@ export const ProviderTeam: React.FC = () => {
         </div>
         
         <div className="mt-6 p-4 bg-accent/30 rounded-lg border border-accent">
-          <div className="flex items-center space-x-2 mb-2">
-            <Shield className="w-4 h-4 text-primary" />
+          <div className="flex items-center space-x-3 mb-2">
+            <div className="flex items-center justify-center w-5 h-5">
+              <Shield className="w-4 h-4 text-primary" />
+            </div>
             <span className="text-sm font-medium text-foreground">HIPAA Compliance</span>
           </div>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-xs text-muted-foreground ml-8">
             All team communications are encrypted and audit-logged for compliance. 
             Patient access permissions are managed through role-based controls.
           </p>

@@ -92,15 +92,17 @@ export const CompliancePanel: React.FC = () => {
         {complianceMetrics.map((metric, index) => (
           <Card key={index} className="bg-gradient-card">
             <CardContent className="p-4">
-              <div className="flex items-center justify-between mb-2">
-                <metric.icon className="w-5 h-5 text-primary" />
-                <Badge variant="outline" className="text-success border-success">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center justify-center w-8 h-8 bg-primary/10 rounded-full">
+                  <metric.icon className="w-4 h-4 text-primary" />
+                </div>
+                <Badge variant="outline" className="text-success border-success flex items-center">
                   <CheckCircle className="w-3 h-3 mr-1" />
                   {metric.status}
                 </Badge>
               </div>
-              <h3 className="font-medium text-foreground">{metric.title}</h3>
-              <p className="text-2xl font-bold text-primary mt-1">{metric.score}</p>
+              <h3 className="font-medium text-foreground mb-1">{metric.title}</h3>
+              <p className="text-2xl font-bold text-primary mb-1">{metric.score}</p>
               <p className="text-xs text-muted-foreground">Last audit: {metric.lastAudit}</p>
             </CardContent>
           </Card>
@@ -131,26 +133,26 @@ export const CompliancePanel: React.FC = () => {
           <div className="space-y-3">
             {recentAudits.map((audit) => (
               <div key={audit.id} className="p-3 border border-border rounded-lg bg-card">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <div className="p-2 bg-primary/10 rounded-full">
-                      <Activity className="w-4 h-4 text-primary" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-foreground">
-                        {audit.user} - {audit.action}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {audit.patient !== 'N/A' && `Patient: ${audit.patient} • `}
-                        {audit.timestamp}
-                      </p>
-                    </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <div className="flex items-center justify-center w-8 h-8 bg-primary/10 rounded-full flex-shrink-0">
+                    <Activity className="w-4 h-4 text-primary" />
                   </div>
-                  <Badge variant="outline" className="text-success border-success">
-                    <CheckCircle className="w-3 h-3 mr-1" />
-                    Authorized
-                  </Badge>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-medium text-foreground">
+                      {audit.user} - {audit.action}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {audit.patient !== 'N/A' && `Patient: ${audit.patient} • `}
+                      {audit.timestamp}
+                    </p>
+                  </div>
                 </div>
+                <Badge variant="outline" className="text-success border-success flex items-center flex-shrink-0">
+                  <CheckCircle className="w-3 h-3 mr-1" />
+                  Authorized
+                </Badge>
+              </div>
               </div>
             ))}
           </div>
@@ -160,9 +162,11 @@ export const CompliancePanel: React.FC = () => {
       {/* Security Notice */}
       <Card className="border-primary/20 bg-primary/5">
         <CardContent className="p-4">
-          <div className="flex items-start space-x-3">
-            <Shield className="w-5 h-5 text-primary mt-0.5" />
-            <div>
+          <div className="flex items-start space-x-4">
+            <div className="flex items-center justify-center w-8 h-8 bg-primary/10 rounded-full flex-shrink-0 mt-0.5">
+              <Shield className="w-4 h-4 text-primary" />
+            </div>
+            <div className="min-w-0 flex-1">
               <h3 className="font-medium text-foreground">Security & Compliance Status</h3>
               <p className="text-sm text-muted-foreground mt-1">
                 AugiCare maintains HIPAA and SOC 2 Type II compliance with end-to-end encryption, 
