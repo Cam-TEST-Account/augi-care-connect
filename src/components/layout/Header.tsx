@@ -52,7 +52,7 @@ export const Header: React.FC = () => {
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500 z-10" />
             <Input 
               placeholder="Search patients, records..." 
-              className="pl-10 pr-20 sm:pr-32 bg-white/90 border-white/30 text-sm"
+              className="pl-10 pr-20 sm:pr-32 bg-white/95 border-gray-200 text-sm"
               onClick={() => setOpen(true)}
               readOnly
             />
