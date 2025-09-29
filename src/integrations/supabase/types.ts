@@ -1118,6 +1118,14 @@ export type Database = {
         Args: { _organization_id: string; _user_id: string }
         Returns: boolean
       }
+      can_access_patient_strict: {
+        Args: { _patient_id: string; _user_id: string }
+        Returns: boolean
+      }
+      can_create_patient_in_org: {
+        Args: { _organization_id: string; _user_id: string }
+        Returns: boolean
+      }
       cleanup_expired_oauth_sessions: {
         Args: Record<PropertyKey, never>
         Returns: undefined
