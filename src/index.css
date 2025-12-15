@@ -17,18 +17,24 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 210 24% 16%;
 
-    /* Dark Teal Primary */
-    --primary: 171 100% 11%;
+    /* Dark Teal Primary - Augi Forest Green */
+    --primary: 152 32% 28%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 171 100% 20%;
+    --primary-glow: 152 32% 38%;
     
     /* Sage Green Secondary */
     --secondary: 119 22% 45%;
     --secondary-foreground: 0 0% 100%;
     
     /* Light Cream Accent */
-    --accent: 60 19% 92%;
-    --accent-foreground: 171 100% 11%;
+    --accent: 45 30% 96%;
+    --accent-foreground: 152 32% 28%;
+    
+    /* Augi Brand Colors */
+    --augi-forest: 152 32% 28%;
+    --augi-sage: 119 22% 55%;
+    --augi-cream: 45 30% 96%;
+    --augi-coral: 12 76% 61%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
