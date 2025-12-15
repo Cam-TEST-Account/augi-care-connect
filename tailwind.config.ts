@@ -71,6 +71,13 @@ export default {
         provider: {
           green: "hsl(var(--provider-green))",
         },
+        // Augi Brand Colors
+        augi: {
+          forest: "hsl(var(--augi-forest))",
+          sage: "hsl(var(--augi-sage))",
+          cream: "hsl(var(--augi-cream))",
+          coral: "hsl(var(--augi-coral))",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",

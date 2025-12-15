@@ -4,20 +4,15 @@ import {
   Users, 
   Calendar, 
   MessageSquare, 
-  FileText, 
-  Search,
-  Settings,
-  Shield,
-  Activity,
-  Video,
-  ChevronRight
+  Bell,
+  LayoutDashboard,
+  ExternalLink
 } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -26,49 +21,38 @@ import {
   SidebarHeader,
   SidebarFooter,
 } from '@/components/ui/sidebar';
-import augiLogo from '@/assets/augi-logo.png';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 
 const navigation = [
-  { name: 'Dashboard', icon: Activity, href: '/' },
+  { name: 'Dashboard', icon: LayoutDashboard, href: '/' },
   { name: 'Patients', icon: Users, href: '/patients' },
+  { name: 'Notifications', icon: Bell, href: '/messages' },
   { name: 'Appointments', icon: Calendar, href: '/appointments' },
-  { name: 'Telehealth', icon: Video, href: '/telehealth' },
-  { name: 'Messages', icon: MessageSquare, href: '/messages' },
-  { name: 'Records', icon: FileText, href: '/records' },
-  { name: 'Provider Search', icon: Search, href: '/providers' },
-  { name: 'Analytics', icon: Activity, href: '/analytics' },
-];
-
-const bottomNavigation = [
-  { name: 'Security', icon: Shield, href: '/security' },
-  { name: 'Settings', icon: Settings, href: '/settings' },
+  { name: 'Messages', icon: MessageSquare, href: '/telehealth' },
 ];
 
 export function AppSidebar() {
-  const { state, open } = useSidebar();
+  const { state } = useSidebar();
   const location = useLocation();
   
   const isActive = (path: string) => location.pathname === path;
-  const isExpanded = navigation.some((item) => isActive(item.href));
   const collapsed = state === "collapsed";
 
   return (
     <Sidebar 
-      className="floating-panel border-r-0"
-      style={{ background: 'var(--gradient-glass)' }}
+      className="bg-white border-r border-border"
       collapsible="icon"
     >
-      {/* Header with Logo */}
+      {/* Header with Augi Logo */}
       <SidebarHeader className="p-4 md:p-6 border-b border-border">
         <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 flex items-center justify-center flex-shrink-0">
-            <img src={augiLogo} alt="Augi Logo" className="w-8 h-8 rounded-lg" />
-          </div>
-          {!collapsed && (
-            <div className="min-w-0 flex-1">
-              <h1 className="text-lg font-semibold text-foreground truncate">AugiCare</h1>
-              <p className="text-xs text-muted-foreground truncate">Provider Dashboard</p>
+          {!collapsed ? (
+            <div className="flex items-center gap-2">
+              <span className="text-2xl font-serif text-augi-forest italic">augi</span>
+              <ExternalLink className="w-4 h-4 text-muted-foreground" />
             </div>
+          ) : (
+            <span className="text-xl font-serif text-augi-forest italic">a</span>
           )}
         </div>
       </SidebarHeader>
@@ -76,67 +60,23 @@ export function AppSidebar() {
       <SidebarContent>
         {/* Main Navigation */}
         <SidebarGroup>
-          <SidebarGroupLabel className={collapsed ? 'sr-only' : ''}>
-            Main
-          </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {navigation.map((item) => (
                 <SidebarMenuItem key={item.name}>
                   <SidebarMenuButton 
                     asChild
-                    className={`transition-all duration-200 ${
+                    className={`transition-all duration-200 rounded-lg ${
                       isActive(item.href) 
-                        ? 'bg-primary text-primary-foreground font-medium shadow-button' 
-                        : 'hover:bg-muted/50 hover:scale-[1.02]'
+                        ? 'bg-augi-sage text-white font-medium' 
+                        : 'hover:bg-augi-cream text-foreground'
                     }`}
                     tooltip={collapsed ? item.name : undefined}
                   >
                     <Link to={item.href} className="flex items-center">
                       <item.icon className="w-4 h-4 flex-shrink-0" />
                       {!collapsed && (
-                        <>
-                          <span className="ml-3 truncate">{item.name}</span>
-                          {isActive(item.href) && (
-                            <ChevronRight className="w-3 h-3 ml-auto opacity-60" />
-                          )}
-                        </>
-                      )}
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        {/* Bottom Navigation */}
-        <SidebarGroup>
-          <SidebarGroupLabel className={collapsed ? 'sr-only' : ''}>
-            System
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {bottomNavigation.map((item) => (
-                <SidebarMenuItem key={item.name}>
-                  <SidebarMenuButton 
-                    asChild
-                    className={`transition-all duration-200 ${
-                      isActive(item.href) 
-                        ? 'bg-primary text-primary-foreground font-medium shadow-button' 
-                        : 'hover:bg-muted/50 hover:scale-[1.02]'
-                    }`}
-                    tooltip={collapsed ? item.name : undefined}
-                  >
-                    <Link to={item.href} className="flex items-center">
-                      <item.icon className="w-4 h-4 flex-shrink-0" />
-                      {!collapsed && (
-                        <>
-                          <span className="ml-3 truncate">{item.name}</span>
-                          {isActive(item.href) && (
-                            <ChevronRight className="w-3 h-3 ml-auto opacity-60" />
-                          )}
-                        </>
+                        <span className="ml-3 truncate">{item.name}</span>
                       )}
                     </Link>
                   </SidebarMenuButton>
@@ -147,9 +87,21 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      {/* Footer with Trigger */}
-      <SidebarFooter className="p-2 border-t border-border">
-        <SidebarTrigger className="w-full h-8 flex items-center justify-center hover:bg-muted/50 rounded-md transition-colors" />
+      {/* Footer with User */}
+      <SidebarFooter className="p-4 border-t border-border">
+        <div className="flex items-center gap-3">
+          <Avatar className="w-10 h-10 bg-augi-forest">
+            <AvatarFallback className="bg-augi-forest text-white text-sm font-medium">
+              ND
+            </AvatarFallback>
+          </Avatar>
+          {!collapsed && (
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-foreground truncate">Nishtha D.</p>
+              <p className="text-xs text-muted-foreground truncate">Lunar Health</p>
+            </div>
+          )}
+        </div>
       </SidebarFooter>
     </Sidebar>
   );

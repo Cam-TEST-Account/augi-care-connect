@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -10,12 +10,13 @@ import {
   Calendar, 
   AlertTriangle,
   Search,
-  Plus
+  UserPlus
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
-import { PatientCard } from './PatientCard';
+import { PatientDetailView } from './PatientDetailView';
+import { InvitePatientDialog } from './InvitePatientDialog';
 
 interface Patient {
   id: string;
@@ -37,6 +38,7 @@ export const EnhancedPatientDashboard: React.FC = () => {
   const [patients, setPatients] = useState<Patient[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
+  const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
   const { user } = useAuth();
   const { toast } = useToast();
 
@@ -75,47 +77,6 @@ export const EnhancedPatientDashboard: React.FC = () => {
     }
   };
 
-  const handleQuickAction = (patientId: string, action: string) => {
-    const patient = patients.find(p => p.id === patientId);
-    const patientName = patient ? `${patient.first_name} ${patient.last_name}` : 'Patient';
-    
-    switch (action) {
-      case 'schedule':
-        toast({
-          title: 'Scheduling',
-          description: `Opening calendar for ${patientName}`,
-        });
-        break;
-      case 'message':
-        toast({
-          title: 'Messaging',
-          description: `Opening secure message to ${patientName}`,
-        });
-        break;
-      case 'records':
-        toast({
-          title: 'Medical Records',
-          description: `Opening records for ${patientName}`,
-        });
-        break;
-      case 'call':
-        if (patient?.phone) {
-          window.open(`tel:${patient.phone}`, '_self');
-        }
-        break;
-      case 'email':
-        if (patient?.email) {
-          window.open(`mailto:${patient.email}`, '_blank');
-        }
-        break;
-      default:
-        toast({
-          title: 'Action',
-          description: `${action} for ${patientName}`,
-        });
-    }
-  };
-
   const filteredPatients = patients.filter(patient => {
     const searchLower = searchTerm.toLowerCase();
     return (
@@ -133,10 +94,36 @@ export const EnhancedPatientDashboard: React.FC = () => {
     pendingVisits: patients.filter(p => p.next_appointment_date).length,
   };
 
+  const getRiskBadgeClass = (level: string) => {
+    switch (level) {
+      case 'critical': return 'bg-red-100 text-red-700';
+      case 'high': return 'bg-orange-100 text-orange-700';
+      case 'medium': return 'bg-yellow-100 text-yellow-700';
+      case 'low': return 'bg-green-100 text-green-700';
+      default: return 'bg-gray-100 text-gray-700';
+    }
+  };
+
+  // If a patient is selected, show the detail view
+  if (selectedPatient) {
+    return (
+      <div>
+        <Button 
+          variant="ghost" 
+          className="mb-4 text-augi-forest"
+          onClick={() => setSelectedPatient(null)}
+        >
+          ← Back to Patient List
+        </Button>
+        <PatientDetailView patient={selectedPatient} />
+      </div>
+    );
+  }
+
   if (loading) {
     return (
       <div className="container mx-auto p-6">
-        <div className="text-center py-8">Loading patients...</div>
+        <div className="text-center py-8 text-muted-foreground">Loading patients...</div>
       </div>
     );
   }
@@ -146,13 +133,17 @@ export const EnhancedPatientDashboard: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Patient Dashboard</h1>
-          <p className="text-muted-foreground">Comprehensive patient management and analytics</p>
+          <h1 className="text-3xl font-serif text-augi-forest">Patients</h1>
+          <p className="text-muted-foreground">Pre-appointment preparation for your practice</p>
         </div>
-        <Button className="primary-button">
-          <Plus className="w-4 h-4 mr-2" />
-          Add Patient
-        </Button>
+        <InvitePatientDialog 
+          trigger={
+            <Button className="bg-augi-sage hover:bg-augi-sage/90 text-white gap-2">
+              <UserPlus className="w-4 h-4" />
+              Invite Patients to Augi FREE
+            </Button>
+          }
+        />
       </div>
 
       {/* Search Bar */}
@@ -162,74 +153,125 @@ export const EnhancedPatientDashboard: React.FC = () => {
           placeholder="Search patients..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="pl-10 enhanced-search-input"
+          className="pl-10 bg-white border-border"
         />
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card className="depth-card">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Patients</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.total}</div>
-            <p className="text-xs text-muted-foreground">All registered patients</p>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <Card className="bg-white border border-border">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground">Total Patients</p>
+                <p className="text-2xl font-semibold text-foreground">{stats.total}</p>
+              </div>
+              <div className="w-10 h-10 rounded-full bg-augi-cream flex items-center justify-center">
+                <Users className="w-5 h-5 text-augi-forest" />
+              </div>
+            </div>
           </CardContent>
         </Card>
 
-        <Card className="depth-card">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">High Risk</CardTitle>
-            <AlertTriangle className="h-4 w-4 text-orange-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-orange-500">{stats.highRisk}</div>
-            <p className="text-xs text-muted-foreground">Require attention</p>
+        <Card className="bg-white border border-border">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground">High Risk</p>
+                <p className="text-2xl font-semibold text-augi-coral">{stats.highRisk}</p>
+              </div>
+              <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center">
+                <AlertTriangle className="w-5 h-5 text-augi-coral" />
+              </div>
+            </div>
           </CardContent>
         </Card>
 
-        <Card className="depth-card">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Patients</CardTitle>
-            <TrendingUp className="h-4 w-4 text-green-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-green-500">{stats.active}</div>
-            <p className="text-xs text-muted-foreground">Currently in care</p>
+        <Card className="bg-white border border-border">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground">Active</p>
+                <p className="text-2xl font-semibold text-augi-sage">{stats.active}</p>
+              </div>
+              <div className="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center">
+                <TrendingUp className="w-5 h-5 text-augi-sage" />
+              </div>
+            </div>
           </CardContent>
         </Card>
 
-        <Card className="depth-card">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Pending Visits</CardTitle>
-            <Calendar className="h-4 w-4 text-blue-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-blue-500">{stats.pendingVisits}</div>
-            <p className="text-xs text-muted-foreground">Scheduled appointments</p>
+        <Card className="bg-white border border-border">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground">Upcoming Visits</p>
+                <p className="text-2xl font-semibold text-foreground">{stats.pendingVisits}</p>
+              </div>
+              <div className="w-10 h-10 rounded-full bg-augi-cream flex items-center justify-center">
+                <Calendar className="w-5 h-5 text-augi-forest" />
+              </div>
+            </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Patient Cards */}
-      <div className="space-y-6">
-        <h2 className="text-xl font-semibold">Patient Records ({filteredPatients.length})</h2>
+      {/* Patient List */}
+      <div className="space-y-4">
+        <h2 className="text-lg font-medium text-foreground">Patient Records ({filteredPatients.length})</h2>
         {filteredPatients.length === 0 ? (
-          <Card className="depth-card">
-            <CardContent className="py-8 text-center">
-              <p className="text-muted-foreground">No patients found</p>
+          <Card className="bg-white border border-border">
+            <CardContent className="py-12 text-center">
+              <Users className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
+              <p className="text-muted-foreground mb-4">No patients found</p>
+              <InvitePatientDialog 
+                trigger={
+                  <Button className="bg-augi-forest hover:bg-augi-forest/90 text-white">
+                    Invite Your First Patient
+                  </Button>
+                }
+              />
             </CardContent>
           </Card>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-2">
             {filteredPatients.map((patient) => (
-              <PatientCard
-                key={patient.id}
-                patient={patient}
-                onQuickAction={handleQuickAction}
-              />
+              <Card 
+                key={patient.id} 
+                className="bg-white border border-border hover:shadow-md transition-shadow cursor-pointer"
+                onClick={() => setSelectedPatient(patient)}
+              >
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      <Avatar className="w-12 h-12 bg-augi-sage/20">
+                        <AvatarFallback className="bg-augi-sage/30 text-augi-forest font-medium">
+                          {patient.first_name.charAt(0)}{patient.last_name.charAt(0)}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <p className="font-medium text-foreground">
+                          {patient.first_name} {patient.last_name}
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          MRN: {patient.mrn || 'N/A'} • DOB: {new Date(patient.date_of_birth).toLocaleDateString()}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Badge className={`${getRiskBadgeClass(patient.risk_level)} text-xs`}>
+                        {patient.risk_level} risk
+                      </Badge>
+                      <p className="text-sm text-muted-foreground">
+                        {patient.next_appointment_date 
+                          ? `Next: ${new Date(patient.next_appointment_date).toLocaleDateString()}`
+                          : 'No upcoming visit'
+                        }
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             ))}
           </div>
         )}

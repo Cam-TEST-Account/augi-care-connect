@@ -1126,10 +1126,7 @@ export type Database = {
         Args: { _organization_id: string; _user_id: string }
         Returns: boolean
       }
-      cleanup_expired_oauth_sessions: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
+      cleanup_expired_oauth_sessions: { Args: never; Returns: undefined }
       get_account_pricing: {
         Args: { _account_type: Database["public"]["Enums"]["account_type"] }
         Returns: {
@@ -1141,10 +1138,7 @@ export type Database = {
           super_admin_price: number
         }[]
       }
-      get_user_organization: {
-        Args: { _user_id: string }
-        Returns: string
-      }
+      get_user_organization: { Args: { _user_id: string }; Returns: string }
       get_user_organization_safe: {
         Args: { _user_id: string }
         Returns: string
